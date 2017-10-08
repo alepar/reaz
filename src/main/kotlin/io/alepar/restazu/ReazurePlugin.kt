@@ -5,6 +5,7 @@ import io.javalin.Javalin
 import org.gudy.azureus2.plugins.Plugin
 import org.gudy.azureus2.plugins.PluginInterface
 import org.gudy.azureus2.plugins.disk.DiskManagerFileInfo
+import org.gudy.azureus2.plugins.download.Download
 import org.gudy.azureus2.plugins.download.DownloadManager
 import java.net.InetAddress
 import java.net.InetSocketAddress
@@ -62,11 +63,10 @@ class AzureusRestApi(val iface: PluginInterface) {
                                         lastScrape?.nonSeedCount,
                                         lastScrape?.seedCount,
                                         download.diskManagerFileInfo.map {
-                                            val tf = torrent.files[it.index]
                                             RestTorrentFile(
                                                     it.index,
-                                                    tf.name,
-                                                    tf.size,
+                                                    extractTorrentFileName(download, it), // torrent.files[it.index].name is *very* slow
+                                                    it.length,
                                                     it.downloaded,
                                                     extractPriority(it)
                                             )
@@ -86,6 +86,18 @@ class AzureusRestApi(val iface: PluginInterface) {
 
     }
 
+}
+
+private fun extractTorrentFileName(download: Download, info: DiskManagerFileInfo): String {
+    val name = download.name
+    val canFilePath = info.file.canonicalPath
+
+    val indexOf = canFilePath.indexOf(name)
+    if (indexOf < 0) return info.file.name
+
+    if (indexOf + name.length == canFilePath.length) return name; // single-file torrent
+
+    return canFilePath.substring(indexOf+name.length+1)
 }
 
 private val hexArray = "0123456789ABCDEF".toCharArray()

@@ -14,7 +14,8 @@ data class RestTorrent(
         val connectedLeechers: Int?,
         val connectedSeeds: Int?,
         val scrapedLeechers: Int?,
-        val scrapedSeeds: Int?, val files: List<RestTorrentFile>
+        val scrapedSeeds: Int?,
+        val files: List<RestTorrentFile>?
 )
 
 data class RestTorrentFile(
