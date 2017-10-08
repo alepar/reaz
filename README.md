@@ -1,5 +1,6 @@
 # Development
-## Running azureus
+
+## Running plugin
 
 Before running, sources and resources must be compiled into a jar, and placed to:
 ```
