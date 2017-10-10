@@ -67,7 +67,7 @@ class App extends React.Component {
         if (this.props.list.length) {
             return (
                 <ReactDataGrid
-                    rowKey={"key"}
+                    rowKey={"hash"}
                     columns={this._columns}
                     rowGetter={i => this.rowGetter(i)}
                     rowsCount={this.props.list.length}
