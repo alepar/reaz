@@ -16,4 +16,8 @@ export function* torrentsFetchList(action) {
         type: "reducers.torrents.list.update",
         list: list.data,
     });
+
+    yield put({
+        type: "sagas.torrents.list.fetch"
+    });
 }
