@@ -4,10 +4,12 @@
   "private": true,
   "dependencies": {
     "axios": "^0.16.2",
+    "feather-icons": "^3.2.2",
     "react": "^15.6.2",
     "react-bootstrap": "^0.31.3",
     "react-data-grid": "^2.0.60",
     "react-dom": "^15.6.2",
+    "react-feather": "^1.0.7",
     "react-redux": "^5.0.6",
     "react-router-redux": "^4.0.8",
     "react-scripts": "1.0.14",

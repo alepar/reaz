@@ -1,16 +1,24 @@
 body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
-  font-size: 9pt;
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    font-size: 9pt;
 }
 
 .alignright {
-  text-align: right;
+    text-align: right;
 }
 
 .aligncenter {
-  text-align: center;
+    text-align: center;
 }
 
-.react-grid-Row--even .react-grid-Cell { background-color: #f8f8f8; }
+.react-grid-Row--even .react-grid-Cell {
+    background-color: #f8f8f8;
+}
+
+#navbar-container::after {
+    display: block;
+    content: "";
+    clear: both;
+}

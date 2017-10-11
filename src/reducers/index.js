@@ -15,6 +15,24 @@ function torrents(state = {}, action) {
 
             new_state.list = action.list;
 
+            let downloadedBytes = 0;
+            let downloadBps = 0;
+            let uploadedBytes = 0;
+            let uploadBps = 0;
+            for (let torrent of new_state.list) {
+                downloadedBytes += torrent.downloadedBytes;
+                downloadBps += torrent.downloadBps;
+                uploadedBytes += torrent.uploadedBytes;
+                uploadBps += torrent.uploadBps;
+            }
+
+            new_state.quickstats = {
+                downloadedBytes: downloadedBytes,
+                downloadBps: downloadBps,
+                uploadedBytes: uploadedBytes,
+                uploadBps: uploadBps,
+            };
+
             return new_state;
 
         default:
