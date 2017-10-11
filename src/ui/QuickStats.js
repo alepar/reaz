@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { ArrowUp, ArrowDown } from "react-feather";
-import { Table } from "react-bootstrap";
+import { Tooltip, OverlayTrigger } from "react-bootstrap";
 
 import { formatSizeInBytes } from "./Util";
 
@@ -12,30 +12,27 @@ class QuickStats extends React.Component {
         if (qs === undefined) {
             return null;
         } else {
+            const tooltip = (
+                <Tooltip placement={"left"}>
+                    <div><strong>DL Total: </strong>{formatSizeInBytes(qs.downloadedBytes)}</div>
+                    <div><strong>UL Total: </strong>{formatSizeInBytes(qs.uploadedBytes)}</div>
+                </Tooltip>
+            );
             return (
-                <table width={"100%"}>
-{/*
-                    <thead>
-                        <tr>
-                            <th>Speed</th>
-                            <th className={"aligncenter"}>Limit</th>
-                            <th className={"alignright"}>Total</th>
-                        </tr>
-                    </thead>
-*/}
-                    <tbody>
-                        <tr style={{color: "Crimson"}}>
-                            <td>DL<ArrowDown size={10}/> {qs.downloadBps > 0 ? formatSizeInBytes(qs.downloadBps) + "/s" : "-"}</td>
-                            <td className={"aligncenter"}>[--]</td>
-                            <td className={"alignright"}>({qs.downloadedBytes > 0 ? formatSizeInBytes(qs.downloadedBytes) : "-"})</td>
-                        </tr>
-                        <tr style={{color: "ForestGreen"}}>
-                            <td>UL<ArrowUp size={10}/> {qs.uploadBps > 0 ? formatSizeInBytes(qs.uploadBps) + "/s" : "-"}</td>
-                            <td className={"aligncenter"}>[--]</td>
-                            <td className={"alignright"}>({qs.uploadedBytes > 0 ? formatSizeInBytes(qs.uploadedBytes) : "-"})</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <OverlayTrigger placement={"left"} overlay={tooltip}>
+                    <table width={"100%"}>
+                        <tbody>
+                            <tr style={{color: "Crimson"}}>
+                                <td>DL<ArrowDown size={10}/></td>
+                                <td className={"alignright"}>{qs.downloadBps > 0 ? formatSizeInBytes(qs.downloadBps) + "/s" : "-"}</td>
+                            </tr>
+                            <tr style={{color: "ForestGreen"}}>
+                                <td>UL<ArrowUp size={10}/></td>
+                                <td className={"alignright"}>{qs.uploadBps > 0 ? formatSizeInBytes(qs.uploadBps) + "/s" : "-"}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </OverlayTrigger>
             );
         }
     }

@@ -1,5 +1,4 @@
 import React from 'react';
-import { User } from "react-feather";
 
 import TorrentGrid from "./TorrentGrid";
 import NavBar from "./NavBar";
@@ -14,7 +13,7 @@ export default class App extends React.Component {
                     <div style={{float: "left"}}>
                         <NavBar />
                     </div>
-                    <div style={{width: "200px", float: "right"}}>
+                    <div style={{width: "95px", float: "right"}}>
                         <QuickStats />
                     </div>
                 </div>
