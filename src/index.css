@@ -22,3 +22,8 @@ body {
     content: "";
     clear: both;
 }
+
+#quickstats {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
