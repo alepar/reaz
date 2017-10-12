@@ -4,6 +4,7 @@ import { ArrowUp, ArrowDown } from "react-feather";
 import { Tooltip, OverlayTrigger, Popover } from "react-bootstrap";
 
 import { formatSizeInBytes } from "./Util";
+import SpeedLimitsEdit from "./SpeedLimitsEdit";
 
 class QuickStats extends React.Component {
     render() {
@@ -13,15 +14,14 @@ class QuickStats extends React.Component {
             return null;
         } else {
             const totalsTooltip = (
-                <Tooltip placement={"left"}>
+                <Tooltip id="totalsTooltip" placement={"left"}>
                     <div><strong>DL Total: </strong>{formatSizeInBytes(qs.downloadedBytes)}</div>
                     <div><strong>UL Total: </strong>{formatSizeInBytes(qs.uploadedBytes)}</div>
                 </Tooltip>
             );
             const limitsPopover = (
                 <Popover id="limitsPopover" title="Speed limits">
-                    <div><strong>DL: </strong>10240 KB/s</div>
-                    <div><strong>UL: </strong>10240 KB/s</div>
+                    <SpeedLimitsEdit/>
                 </Popover>
             );
             return (
@@ -46,6 +46,7 @@ class QuickStats extends React.Component {
             );
         }
     }
+
 }
 
 function mapStateToProps(state) {

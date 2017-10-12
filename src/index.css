@@ -29,3 +29,11 @@ body {
     margin-right: 10px;
     cursor: pointer;
 }
+
+.speed-limit-edit {
+    width: 130px;
+}
+
+.speed-limit-edit-input {
+    width: 60px;
+}

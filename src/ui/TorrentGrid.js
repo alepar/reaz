@@ -145,10 +145,6 @@ class DoneFormatter extends React.Component {
     }
 }
 
-DoneFormatter.propTypes = {
-    value: PropTypes.number.isRequired
-};
-
 function mapStateToProps(state) {
     return ({
         list: state.torrents.list || [],

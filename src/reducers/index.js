@@ -4,12 +4,14 @@ import { routerReducer } from "react-router-redux";
 export const reducers = combineReducers({
     routing: routerReducer,
     torrents: torrents,
+    limits: limits,
 });
 
 function torrents(state = {}, action) {
+    let new_state;
     switch (action.type) {
         case "reducers.torrents.list.update":
-            let new_state = JSON.parse(JSON.stringify(
+            new_state = JSON.parse(JSON.stringify(
                 Object.assign({}, state, {list: null})
             ));
 
@@ -33,6 +35,19 @@ function torrents(state = {}, action) {
                 uploadBps: uploadBps,
             };
 
+            return new_state;
+
+        default:
+            return state;
+    }
+}
+
+function limits(state = {}, action) {
+    let new_state;
+    switch (action.type) {
+        case "reducers.limits.set":
+            new_state = JSON.parse(JSON.stringify(state));
+            Object.assign(new_state, action.limits);
             return new_state;
 
         default:
