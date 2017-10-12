@@ -20,19 +20,20 @@ class QuickStats extends React.Component {
             );
             return (
                 <OverlayTrigger placement={"left"} overlay={tooltip}>
-                    <table width={"100%"} id={"quickstats"}>
-                        <tbody>
-                            <tr style={{color: "Crimson"}}>
-                                <td>DL<ArrowDown size={10}/></td>
-                                <td className={"alignright"}>{qs.downloadBps > 0 ? formatSizeInBytes(qs.downloadBps) + "/s" : "-"}</td>
-                                <td width={"10px"}/>
-                            </tr>
-                            <tr style={{color: "ForestGreen"}}>
-                                <td>UL<ArrowUp size={10}/></td>
-                                <td className={"alignright"}>{qs.uploadBps > 0 ? formatSizeInBytes(qs.uploadBps) + "/s" : "-"}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div id={"quickstats"}>
+                        <table width={"100%"}>
+                            <tbody>
+                                <tr style={{color: "Crimson"}}>
+                                    <td>DL<ArrowDown size={10}/></td>
+                                    <td className={"alignright"}>{qs.downloadBps > 0 ? formatSizeInBytes(qs.downloadBps) + "/s" : "-"}</td>
+                                </tr>
+                                <tr style={{color: "ForestGreen"}}>
+                                    <td>UL<ArrowUp size={10}/></td>
+                                    <td className={"alignright"}>{qs.uploadBps > 0 ? formatSizeInBytes(qs.uploadBps) + "/s" : "-"}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </OverlayTrigger>
             );
         }
