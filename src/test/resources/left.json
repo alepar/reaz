@@ -1,0 +1,12 @@
+{
+  "unchanged": "stringvalue",
+  "int": 1,
+  "arr": [1, 2, 3],
+  "obj": {
+    "int": 1,
+    "arr": [1, 2, 3],
+    "deleted": "somefield",
+    "unchanged": "stringvalue"
+  },
+  "deleted": "somefield"
+}

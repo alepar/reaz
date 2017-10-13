@@ -1,6 +1,8 @@
 package io.alepar.restazu
 
-data class RestTorrent(
+import com.fasterxml.jackson.databind.JsonNode
+
+data class RestDownload(
         val hash: String,
         val torrentName: String,
         val status: String,
@@ -14,12 +16,10 @@ data class RestTorrent(
         val connectedLeechers: Int?,
         val connectedSeeds: Int?,
         val scrapedLeechers: Int?,
-        val scrapedSeeds: Int?,
-        val files: List<RestTorrentFile>?
+        val scrapedSeeds: Int?, val createdEpochMillis: Long
 )
 
-data class RestTorrentFile(
-        val index: Int,
+data class RestDownloadFile(
         val path: String,
         val sizeBytes: Long,
         val downloadedBytes: Long,
@@ -29,3 +29,24 @@ data class RestTorrentFile(
 enum class RestPriority {
     NORMAL, HIGH, DONOTDOWNLOAD, DELETE
 }
+
+data class RestSpeedLimits (
+        val dlBps: Int,
+        val ulBps: Int
+)
+
+data class RestServerState (
+        val downloads: Map<String, RestDownload>,
+        val downloadFiles: Map<String, Map<Int, RestDownloadFile>>,
+        val speedLimits: RestSpeedLimits
+)
+
+data class RestIncremental (
+        val token: String,
+        val diff: RestJsonDiff
+)
+
+data class RestJsonDiff(
+        val updated: JsonNode,
+        val deleted: List<List<String>>
+)

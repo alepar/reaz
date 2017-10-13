@@ -21,60 +21,37 @@ class ReazurePlugin : Plugin {
 
 data class User(val name: String, val email: String);
 
-class AzureusRestApi(val iface: PluginInterface) {
+class AzureusRestApi(private val iface: PluginInterface) {
 
     private val listenAddress = InetSocketAddress(InetAddress.getLoopbackAddress(), 7000)
 
     private val app = Javalin.create()
             .embeddedServer(ListenCustomizableServerFactory(listenAddress))
             .start()
-    private val downloadManager: DownloadManager
+
+    private val azureus : AzureusApi = PluginInterfaceAzureusApi(iface)
+    private val differ: IncrementalGenerator = GuavaJacksonIncrementalGenerator()
 
     init {
-        downloadManager = iface.downloadManager;
-
         app.routes({ ->
             path("api") { ->
 
                 path("private") { ->
 
-                    path("torrents") { ->
+                    path("serverstate") { ->
 
-                        get("") { ctx ->
-                            ctx.json(downloadManager.downloads.map { download ->
-                                val torrent = download.torrent
-                                val stats = download.stats
-                                val peerStats = download.peerManager?.stats
-                                val lastScrape = download.lastScrapeResult
+                        get { ctx ->
+                            val token = ctx.request().getParameter("token")
+                            val curstate = RestServerState(
+                                    azureus.getDownloads(),
+                                    azureus.getDownloadFiles(),
+                                    azureus.getSpeedLimits()
+                            )
 
-                                RestTorrent(
-                                        bytesToHex(torrent.hash),
-                                        download.name,
-                                        stats.status,
-                                        torrent.size,
-                                        torrent.comment,
-                                        stats.downloaded,
-                                        stats.uploaded,
-                                        stats.downloadAverage,
-                                        stats.uploadAverage,
-                                        stats.etaSecs,
-                                        peerStats?.connectedLeechers,
-                                        peerStats?.connectedSeeds,
-                                        lastScrape?.nonSeedCount,
-                                        lastScrape?.seedCount,
-                                        download.diskManagerFileInfo.map {
-                                            RestTorrentFile(
-                                                    it.index,
-                                                    extractTorrentFileName(download, it), // torrent.files[it.index].name is *very* slow
-                                                    it.length,
-                                                    it.downloaded,
-                                                    extractPriority(it)
-                                            )
-                                        }
-                                )
-                            })
+                            val incremental = if(token == null) differ.start(curstate) else differ.incremental(token, curstate)
+
+                            ctx.json(incremental)
                         }
-
                     }
                 }
 
@@ -86,36 +63,5 @@ class AzureusRestApi(val iface: PluginInterface) {
 
     }
 
-}
-
-private fun extractTorrentFileName(download: Download, info: DiskManagerFileInfo): String {
-    val name = download.name
-    val canFilePath = info.file.canonicalPath
-
-    val indexOf = canFilePath.indexOf(name)
-    if (indexOf < 0) return info.file.name
-
-    if (indexOf + name.length == canFilePath.length) return name; // single-file torrent
-
-    return canFilePath.substring(indexOf+name.length+1)
-}
-
-private val hexArray = "0123456789ABCDEF".toCharArray()
-fun bytesToHex(bytes: ByteArray): String {
-    val hexChars = CharArray(bytes.size * 2)
-    for (j in bytes.indices) {
-        val v = bytes[j].toInt() and 0xFF
-        hexChars[j * 2] = hexArray[v.ushr(4)]
-        hexChars[j * 2 + 1] = hexArray[v and 0x0F]
-    }
-    return String(hexChars)
-}
-
-private fun extractPriority(info: DiskManagerFileInfo): RestPriority {
-    if (info.isPriority) return RestPriority.HIGH;
-    if (info.isSkipped) return RestPriority.DONOTDOWNLOAD;
-    if (info.isDeleted) return RestPriority.DELETE;
-
-    return RestPriority.NORMAL;
 }
 

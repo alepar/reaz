@@ -27,7 +27,7 @@ class ListenCustomizableServerFactory(val listenAddress: InetSocketAddress) : Em
     }
 }
 
-class ListenCustomizableJettyServer(private val server: Server, private val servlet: JavalinServlet, val listenAddress: InetSocketAddress) : EmbeddedServer {
+class ListenCustomizableJettyServer(private val server: Server, private val servlet: JavalinServlet, private val listenAddress: InetSocketAddress) : EmbeddedServer {
 
     private val log = LoggerFactory.getLogger(EmbeddedServer::class.java)
 

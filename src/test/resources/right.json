@@ -1,0 +1,12 @@
+{
+  "unchanged": "stringvalue",
+  "int": 5,
+  "arr": [1, 2, 3, 4],
+  "obj": {
+    "int": 5,
+    "arr": [1, 2, 3, 4],
+    "created": "newfield",
+    "unchanged": "stringvalue"
+  },
+  "created": "newfield"
+}
