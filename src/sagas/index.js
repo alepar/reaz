@@ -24,10 +24,10 @@ export function* serverstateFetchList(action) {
 
                 token = response.data.token;
             } else {
-                throw "Bad response from server: " + response.status;
+                throw new Error("Bad response from server: " + response.status);
             }
         } catch (e) {
-            // TODO warn connection is having problems
+            // TODO warn connection is having  problems
         }
 
         // pause for a sec

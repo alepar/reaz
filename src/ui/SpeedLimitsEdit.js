@@ -4,6 +4,7 @@ import { RIENumber } from 'riek'
 
 class SpeedLimitEdit extends React.Component {
     render() {
+        // todo cursor: hand, link style
         return (
             <div className={"speed-limit-edit"}>
                 <div>

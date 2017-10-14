@@ -5,6 +5,8 @@ import { connect } from "react-redux";
 import ReactDataGrid from "react-data-grid";
 import { ProgressBar } from "react-bootstrap";
 
+import dateFormat from "dateformat";
+
 import { formatSizeInBytes } from "./Util";
 
 class TorrentGrid extends React.Component {
@@ -13,6 +15,12 @@ class TorrentGrid extends React.Component {
         super(props);
 
         this._columns = [
+            {
+                key: 'createdEpochMillis',
+                name: 'Added on',
+                width: 70,
+                formatter: DateFormatter
+            },
             {
                 key: 'torrentName',
                 name: 'Name',
@@ -36,6 +44,13 @@ class TorrentGrid extends React.Component {
                 name: 'Size',
                 width: 65,
                 formatter: SizeFormatter,
+                cellClass: "alignright",
+            },
+            {
+                key: 'downloadBps',
+                name: 'DL speed',
+                width: 75,
+                formatter: SpeedFormatter,
                 cellClass: "alignright",
             },
             {
@@ -130,6 +145,19 @@ class SpeedFormatter extends React.Component {
 }
 
 SpeedFormatter.propTypes = {
+    value: PropTypes.number.isRequired
+};
+
+class DateFormatter extends React.Component {
+    render() {
+        const utcSeconds = this.props.value / 1000;
+        const date = new Date(0);
+        date.setUTCSeconds(utcSeconds);
+        return (<div>{dateFormat(date, "yy/mm/dd")}</div>);
+    }
+}
+
+DateFormatter.propTypes = {
     value: PropTypes.number.isRequired
 };
 
