@@ -1,9 +1,14 @@
 import axios from 'axios';
 
+const client = axios.create({
+    baseURL: 'https://reaz.alepar.ru',
+    timeout: 2000
+});
+
 export default class Restazu {
 
-    static getList(action) {
-        return axios.get("https://reaz.alepar.ru/api/private/torrents");
+    static fetchState(params) {
+        return client.get("/api/private/serverstate", {params: params});
     }
 
 }

@@ -51,7 +51,7 @@ class QuickStats extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        quickstats: state.torrents.quickstats || undefined,
+        quickstats: state.serverstate.quickstats || undefined,
     };
 }
 export default connect(mapStateToProps)(QuickStats);

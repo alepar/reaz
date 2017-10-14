@@ -54,25 +54,25 @@ class TorrentGrid extends React.Component {
             },
         ];
 
-        if (0 === this.props.list.length) {
+        if (undefined === this.props.downloads) {
             this.props.dispatch({
-                type: "sagas.torrents.list.fetch",
+                type: "sagas.serverstate.fetch",
             });
         }
     }
 
     rowGetter(i) {
-        return this.props.list[i];
+        return Object.values(this.props.downloads)[i];
     }
 
     render() {
-        if (this.props.list.length) {
+        if (this.props.downloads !== undefined) {
             return (
                 <ReactDataGrid
                     rowKey={"hash"}
                     columns={this._columns}
                     rowGetter={i => this.rowGetter(i)}
-                    rowsCount={this.props.list.length}
+                    rowsCount={Object.keys(this.props.downloads).length}
                     minHeight={750}
                     rowHeight={26}
                 />
@@ -147,7 +147,7 @@ class DoneFormatter extends React.Component {
 
 function mapStateToProps(state) {
     return ({
-        list: state.torrents.list || [],
+        downloads: state.serverstate.downloads || undefined,
     });
 }
 export default connect(mapStateToProps)(TorrentGrid);

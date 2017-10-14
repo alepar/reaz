@@ -31,28 +31,18 @@ class SpeedLimitEdit extends React.Component {
     }
 
     setDlLimit(v) {
-        this.props.dispatch({
-            type: "reducers.limits.set",
-            limits: {
-                dl: Number(v.dlLimit)
-            },
-        });
+        //todo set limit
     }
 
     setUlLimit(v) {
-        this.props.dispatch({
-            type: "reducers.limits.set",
-            limits: {
-                ul: Number(v.ulLimit)
-            },
-        });
+        //todo set limit
     }
 }
 
 function mapStateToProps(state) {
     return {
-        dlLimit: state.limits.dl || 0,
-        ulLimit: state.limits.ul || 0,
+        dlLimit: state.serverstate.speedLimits.dlBps || 0,
+        ulLimit: state.serverstate.speedLimits.ulBps || 0,
     };
 }
 export default connect(mapStateToProps)(SpeedLimitEdit);

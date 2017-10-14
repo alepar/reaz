@@ -5,19 +5,34 @@ import Restazu from "../api/restazu";
 
 export function* sagas() {
     yield [
-        fork(takeLatest, "sagas.torrents.list.fetch", torrentsFetchList),
+        fork(takeLatest, "sagas.serverstate.fetch", serverstateFetchList),
     ]
 }
 
-export function* torrentsFetchList(action) {
-    const list = yield call(Restazu.getList);
+export function* serverstateFetchList(action) {
+    let token = undefined;
 
-    yield put({
-        type: "reducers.torrents.list.update",
-        list: list.data,
-    });
+    while (true) {
+        try {
+            let response = yield call(Restazu.fetchState, {token: token});
 
-    yield put({
-        type: "sagas.torrents.list.fetch"
-    });
+            if (response.status === 200) {
+                yield put({
+                    type: "reducers.serverstate.update",
+                    response: response.data,
+                });
+
+                token = response.data.token;
+            } else {
+                throw "Bad response from server: " + response.status;
+            }
+        } catch (e) {
+            // TODO warn connection is having problems
+        }
+
+        // pause for a sec
+        yield call(() => new Promise((resolve, reject) =>{
+            setTimeout(()=>resolve(""), 1000);
+        }));
+    }
 }
