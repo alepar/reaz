@@ -16,7 +16,8 @@ data class RestDownload(
         val connectedLeechers: Int?,
         val connectedSeeds: Int?,
         val scrapedLeechers: Int?,
-        val scrapedSeeds: Int?, val createdEpochMillis: Long
+        val scrapedSeeds: Int?,
+        val createdEpochMillis: Long
 )
 
 data class RestDownloadFile(
