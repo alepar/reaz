@@ -1,5 +1,8 @@
 import axios from 'axios';
 
+// todo authentication
+// todo xsrf
+
 const client = axios.create({
     baseURL: 'https://reaz.alepar.ru',
     timeout: 10000
