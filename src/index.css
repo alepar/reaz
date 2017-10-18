@@ -13,6 +13,7 @@ body {
     text-align: center;
 }
 
+/*todo better colors for torrentgrid*/
 .react-grid-Row--even .react-grid-Cell {
     background-color: #f8f8f8;
 }

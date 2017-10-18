@@ -17,59 +17,60 @@ class TorrentGrid extends React.Component {
         this._columns = [
             {
                 key: 'createdEpochMillis',
-                name: 'Added on',
+                name: 'Added',
                 width: 70,
-                formatter: DateFormatter
-            },
-            {
+                formatter: DateFormatter,
+                sortable: true,
+            }, {
                 key: 'torrentName',
                 name: 'Name',
-            },
-            {
+                sortable: true,
+            }, {
                 key: 'status',
                 name: 'Status',
                 width: 100,
+                sortable: true,
                 cellClass: "aligncenter",
-            },
-            {
+            }, {
                 key: 'done',
                 name: 'Done',
                 width: 60,
+                sortable: true,
                 formatter: DoneFormatter,
                 cellClass: "aligncenter",
                 getRowMetaData: (row) => row
-            },
-            {
+            }, {
                 key: 'sizeBytes',
                 name: 'Size',
                 width: 65,
                 formatter: SizeFormatter,
                 cellClass: "alignright",
-            },
-            {
+                sortable: true,
+            }, {
                 key: 'downloadBps',
                 name: 'DL speed',
                 width: 75,
                 formatter: SpeedFormatter,
                 cellClass: "alignright",
-            },
-            {
+                sortable: true,
+            }, {
                 key: 'uploadBps',
                 name: 'UL speed',
                 width: 75,
                 formatter: SpeedFormatter,
                 cellClass: "alignright",
-            },
-            {
+                sortable: true,
+            }, {
                 key: 'uploadedBytes',
                 name: 'ULed',
                 width: 65,
                 formatter: SizeFormatter,
                 cellClass: "alignright",
+                sortable: true,
             },
         ];
 
-        if (undefined === this.props.downloads) {
+        if (false !== this.props.gridstate.loading) {
             this.props.dispatch({
                 type: "sagas.serverstate.fetch",
             });
@@ -77,21 +78,31 @@ class TorrentGrid extends React.Component {
     }
 
     rowGetter(i) {
-        return Object.values(this.props.downloads)[i];
+        const idx = this.props.gridstate.sortDirection === "ASC" ? i : this.props.gridstate.hashArray.length - i -1;
+        const hash = this.props.gridstate.hashArray[idx];
+        return this.props.downloads[hash];
+    }
+
+    handleGridSort(sortColumn, sortDirection) {
+        this.props.dispatch({
+            type: "reducers.torrentgrid.sortchanged",
+            sortColumn: sortColumn,
+            sortDirection: sortDirection,
+        });
     }
 
     render() {
-        if (this.props.downloads !== undefined) {
-            return (
-                <ReactDataGrid
-                    rowKey={"hash"}
-                    columns={this._columns}
-                    rowGetter={i => this.rowGetter(i)}
-                    rowsCount={Object.keys(this.props.downloads).length}
-                    minHeight={750}
-                    rowHeight={26}
-                />
-            );
+        if (false === this.props.gridstate.loading) {
+            return (<ReactDataGrid
+                        rowKey={"hash"}
+                        columns={this._columns}
+                        rowGetter={i => this.rowGetter(i)}
+                        rowsCount={this.props.gridstate.hashArray.length}
+                        minHeight={750}
+                        rowHeight={26}
+                        onGridSort={(col, dir) => this.handleGridSort(col, dir)}
+                    />);
+            // TODO https://stackoverflow.com/questions/36862334/get-viewport-window-height-in-reactjs
         } else {
             return (
                 <div style={{
@@ -164,7 +175,7 @@ DateFormatter.propTypes = {
 class DoneFormatter extends React.Component {
     render() {
         const row = this.props.dependentValues;
-        let pct = row.downloadedBytes / row.sizeBytes * 100
+        let pct = row.downloadedBytes / row.sizeBytes * 100;
         if (pct > 100) pct = 100;
         pct = pct.toFixed(0);
         return (
@@ -175,7 +186,13 @@ class DoneFormatter extends React.Component {
 
 function mapStateToProps(state) {
     return ({
-        downloads: state.serverstate.downloads || undefined,
+        downloads: state.serverstate.downloads || {},
+        gridstate: state.ui.torrentgrid || {
+            loading: true
+        }
     });
 }
 export default connect(mapStateToProps)(TorrentGrid);
+
+
+// todo search https://stackoverflow.com/questions/6334692/how-to-use-a-lucene-analyzer-to-tokenize-a-string

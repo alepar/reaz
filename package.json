@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "axios": "^0.16.2",
+    "dateformat": "^3.0.2",
     "feather-icons": "^3.3.0",
     "react": "^15.6.2",
     "react-bootstrap": "^0.31.3",
