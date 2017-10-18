@@ -1,8 +1,13 @@
 import React from 'react';
 
+import { Route } from 'react-router';
+
 import TorrentGrid from "./TorrentGrid";
 import NavBar from "./NavBar";
 import QuickStats from "./QuickStats";
+import Options from "./Options";
+import Stats from "./Stats";
+import Browse from "./Browse";
 
 export default class App extends React.Component {
 
@@ -19,7 +24,10 @@ export default class App extends React.Component {
                 </div>
 
                 <div>
-                    <TorrentGrid />
+                    <Route exact path={"/"} component={TorrentGrid}/>
+                    <Route path={"/options"} component={Options}/>
+                    <Route path={"/stats"} component={Stats}/>
+                    <Route path={"/browse/:hash"} component={Browse}/>
                 </div>
             </div>
         );

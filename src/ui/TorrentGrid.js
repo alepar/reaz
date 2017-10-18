@@ -70,6 +70,7 @@ class TorrentGrid extends React.Component {
             },
         ];
 
+        // TODO this should probably be kickstarted by <App/>
         if (false !== this.props.gridstate.loading) {
             this.props.dispatch({
                 type: "sagas.serverstate.fetch",
@@ -226,3 +227,4 @@ export default connect(mapStateToProps)(TorrentGrid);
 
 
 // todo search https://stackoverflow.com/questions/6334692/how-to-use-a-lucene-analyzer-to-tokenize-a-string
+// todo start/stop/force/delete actions

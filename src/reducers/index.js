@@ -1,8 +1,9 @@
 import { combineReducers } from "redux";
 import { routerReducer } from "react-router-redux";
 
+
 const partialReducers = combineReducers({
-    routing: routerReducer,
+    router: routerReducer,
     serverstate: serverstate,
     ui: ui,
 });
