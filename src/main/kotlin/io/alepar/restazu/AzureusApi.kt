@@ -34,7 +34,7 @@ class PluginInterfaceAzureusApi(iface: PluginInterface) : AzureusApi {
                                 stats.status,
                                 torrent.size,
                                 torrent.comment,
-                                stats.downloaded,
+                                torrent.size-stats.remainingExcludingDND,
                                 stats.uploaded,
                                 stats.downloadAverage,
                                 stats.uploadAverage,
