@@ -1,21 +1,15 @@
 import { combineReducers } from "redux";
 import { routerReducer } from "react-router-redux";
 
-export const reducers = (s, a) => {
-    const combined = combineReducers({
-        routing: routerReducer,
-        serverstate: serverstate,
-        ui: ui,
-    });
+const partialReducers = combineReducers({
+    routing: routerReducer,
+    serverstate: serverstate,
+    ui: ui,
+});
 
-    return globalreducer(combined(s, a), a);
-};
+export const reducers = (s, a) => globalreducer(partialReducers(s, a), a);
 
-function ui(state = {}, action) {
-    return state;
-}
-
-function globalreducer(state = {}, action) {
+function globalreducer(state, action) {
     switch (action.type) {
         case "reducers.serverstate.update":
         case "reducers.torrentgrid.sortchanged":
@@ -23,59 +17,55 @@ function globalreducer(state = {}, action) {
             // has to be called every time list (set of downloads or their ordering) changes
             // depends on being called after reducers from combineReducers()
 
-            const gridstate = state.ui !== undefined ? state.ui.torrentgrid : {};
+            const gridstate = state.ui.torrentgrid;
 
             const new_gridstate = Object.assign({}, gridstate);
 
-            if (state.serverstate === undefined || state.serverstate.downloads === undefined) {
-                new_gridstate.loading = true;
-            } else {
-                new_gridstate.loading = false;
-                const downloads = state.serverstate.downloads;
+            new_gridstate.loading = false;
+            const downloads = state.serverstate.downloads;
 
-                new_gridstate.hashArray = [];
+            new_gridstate.hashArray = [];
 
-                for (let d of Object.keys(downloads)) {
-                    new_gridstate.hashArray.push(d);
-                }
-
-                if (undefined !== action.sortDirection) {
-                    new_gridstate.sortDirection = action.sortDirection;
-                }
-                if (undefined !== action.sortColumn) {
-                    new_gridstate.sortColumn = action.sortColumn;
-                }
-
-                if (new_gridstate.sortDirection === undefined || new_gridstate.sortDirection === "NONE") {
-                    new_gridstate.sortDirection = "DESC";
-                    new_gridstate.sortColumn = "createdEpochMillis";
-                }
-
-                new_gridstate.hashArray = new_gridstate.hashArray.slice();
-
-                let valueExtractor = h => downloads[h][new_gridstate.sortColumn];
-                let valueComparator = (l, r) => {
-                    if (l<r) return -1;
-                    if (l === r) return 0;
-                    return 1;
-                };
-
-                switch(new_gridstate.sortColumn) {
-                    case "torrentName":
-                    case "status":
-                        valueComparator = Intl.Collator().compare;
-                        break;
-                    case "done":
-                        valueExtractor = h => downloads[h].downloadedBytes / downloads[h].sizeBytes;
-                        break;
-                    default:
-                }
-                new_gridstate.hashArray.sort((l, r) => {
-                    let vall = valueExtractor(l);
-                    let valr = valueExtractor(r);
-                    return valueComparator(vall, valr);
-                });
+            for (let d of Object.keys(downloads)) {
+                new_gridstate.hashArray.push(d);
             }
+
+            if (undefined !== action.sortDirection) {
+                new_gridstate.sortDirection = action.sortDirection;
+            }
+            if (undefined !== action.sortColumn) {
+                new_gridstate.sortColumn = action.sortColumn;
+            }
+
+            if (new_gridstate.sortDirection === undefined || new_gridstate.sortDirection === "NONE") {
+                new_gridstate.sortDirection = "DESC";
+                new_gridstate.sortColumn = "createdEpochMillis";
+            }
+
+            new_gridstate.hashArray = new_gridstate.hashArray.slice();
+
+            let valueExtractor = h => downloads[h][new_gridstate.sortColumn];
+            let valueComparator = (l, r) => {
+                if (l<r) return -1;
+                if (l === r) return 0;
+                return 1;
+            };
+
+            switch(new_gridstate.sortColumn) {
+                case "torrentName":
+                case "status":
+                    valueComparator = Intl.Collator().compare;
+                    break;
+                case "done":
+                    valueExtractor = h => downloads[h].downloadedBytes / downloads[h].sizeBytes;
+                    break;
+                default:
+            }
+            new_gridstate.hashArray.sort((l, r) => {
+                let vall = valueExtractor(l);
+                let valr = valueExtractor(r);
+                return valueComparator(vall, valr);
+            });
 
             return merge(state, {ui: {torrentgrid: new_gridstate}});
 
@@ -84,7 +74,12 @@ function globalreducer(state = {}, action) {
     }
 }
 
-function serverstate(state = {}, action) {
+function initialServerState() {
+    return {
+        loading: true,
+    };
+}
+function serverstate(state = initialServerState(), action) {
     let new_state;
     switch (action.type) {
         case "reducers.serverstate.update":
@@ -115,6 +110,17 @@ function serverstate(state = {}, action) {
         default:
             return state;
     }
+}
+
+function initialUiState() {
+    return {
+        torrentgrid: {
+
+        }
+    };
+}
+function ui(state = initialUiState(), action) {
+    return state;
 }
 
 export function merge(oldobj, newobj) {

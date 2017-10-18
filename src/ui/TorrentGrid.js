@@ -187,9 +187,7 @@ class DoneFormatter extends React.Component {
 function mapStateToProps(state) {
     return ({
         downloads: state.serverstate.downloads || {},
-        gridstate: state.ui.torrentgrid || {
-            loading: true
-        }
+        gridstate: state.ui.torrentgrid,
     });
 }
 export default connect(mapStateToProps)(TorrentGrid);
