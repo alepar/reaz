@@ -10,6 +10,8 @@ export function* sagas() {
 }
 
 export function* serverstateFetchList(action) {
+    // TODO ability to pause updates for a while
+
     let token = undefined;
     let tokenTimestampMillis = undefined;
     let retries = 0;

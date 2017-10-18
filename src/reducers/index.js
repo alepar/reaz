@@ -120,7 +120,31 @@ function initialUiState() {
     };
 }
 function ui(state = initialUiState(), action) {
-    return state;
+    switch (action.type) {
+        case "reducers.ui.torrentgtid.hashSelectionChanged":
+            const gridstate = state.torrentgrid;
+            const selectedHashes = {};
+
+            if (gridstate.selectedHashes !== undefined) {
+                 Object.assign(selectedHashes, gridstate.selectedHashes);
+            }
+
+            if (action.selected) {
+                for (let hash of action.hashes) {
+                    selectedHashes[hash] = 1;
+                }
+            } else {
+                for (let hash of action.hashes) {
+                    delete selectedHashes[hash];
+                }
+            }
+
+            const removedOldSelection = merge(state, {torrentgrid: { selectedHashes: undefined}});
+            return merge(removedOldSelection, {torrentgrid: { selectedHashes: selectedHashes}});
+
+        default:
+            return state;
+    }
 }
 
 export function merge(oldobj, newobj) {

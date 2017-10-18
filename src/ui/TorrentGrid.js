@@ -91,8 +91,30 @@ class TorrentGrid extends React.Component {
         });
     }
 
+    onRowsSelected(rows) {
+        this.props.dispatch({
+            type: "reducers.ui.torrentgtid.hashSelectionChanged",
+            hashes: rows.map(r => r.row.hash),
+            selected: true,
+        });
+    }
+
+    onRowsDeselected(rows) {
+        this.props.dispatch({
+            type: "reducers.ui.torrentgtid.hashSelectionChanged",
+            hashes: rows.map(r => r.row.hash),
+            selected: false,
+        });
+    }
+
     render() {
         if (false === this.props.gridstate.loading) {
+            let selectedHashes = {};
+            if (this.props.gridstate.selectedHashes !== undefined) {
+                selectedHashes = this.props.gridstate.selectedHashes;
+            }
+            selectedHashes = Object.keys(selectedHashes);
+
             return (<ReactDataGrid
                         rowKey={"hash"}
                         columns={this._columns}
@@ -101,6 +123,16 @@ class TorrentGrid extends React.Component {
                         minHeight={750}
                         rowHeight={26}
                         onGridSort={(col, dir) => this.handleGridSort(col, dir)}
+                        rowSelection={{
+                            showCheckbox: true,
+                            enableShiftSelect: true,
+                            onRowsSelected: r => this.onRowsSelected(r),
+                            onRowsDeselected: r => this.onRowsDeselected(r),
+                            selectBy: { keys: {
+                                rowKey: 'hash',
+                                values: selectedHashes,
+                            }}
+                        }}
                     />);
             // TODO https://stackoverflow.com/questions/36862334/get-viewport-window-height-in-reactjs
         } else {
