@@ -1,10 +1,48 @@
 import React from 'react';
 import { connect } from "react-redux";
 import { Table, Panel, Grid, Row, Col } from "react-bootstrap";
+import dateFormat from "dateformat";
+
+import { formatSizeInBytes } from "./Util";
 
 class TorrentView extends React.Component {
 
     render() {
+        const download = this.props.download;
+
+        const createdEpochMillis = download.createdEpochMillis / 1000;
+        const createdDate = new Date(0);
+        createdDate.setUTCSeconds(createdEpochMillis);
+        const createdString = dateFormat(createdDate, "yyyy/mm/dd HH:MM Z");
+
+        let comment;
+        if (download.comment.match("^\\w+://.*$")) {
+            comment = <a href={download.comment} target={"_blank"}>{download.comment}</a>;
+        } else {
+            comment = <span>{download.comment}</span>;
+        }
+
+        let etaValue = download.etaSecs;
+        let etaSuffix = " sec";
+        if (etaValue > 60) {
+            etaValue /= 60;
+            etaSuffix = " min";
+        }
+        if (etaValue > 60) {
+            etaValue /= 60;
+            etaSuffix = " hrs";
+        }
+        if (etaValue > 24) {
+            etaValue /= 24;
+            etaSuffix = " days";
+        }
+        let etaString;
+        if (etaValue > 30) {
+            etaString = "\u221E"
+        } else {
+            etaString = etaValue.toFixed(0) + etaSuffix;
+        }
+
         return (
             <div>
                 <Grid>
@@ -15,27 +53,27 @@ class TorrentView extends React.Component {
                                     <tbody>
                                         <tr>
                                             <td>Name</td>
-                                            <td>{this.props.download.torrentName}</td>
+                                            <td>{download.torrentName}</td>
                                         </tr>
                                         <tr>
                                             <td>Size</td>
-                                            <td>{this.props.download.sizeBytes}</td>
+                                            <td>{formatSizeInBytes(download.sizeBytes)}</td>
                                         </tr>
                                         <tr>
                                             <td>Hash</td>
-                                            <td>{this.props.download.hash}</td>
+                                            <td>{download.hash}</td>
                                         </tr>
                                         <tr>
                                             <td>Status</td>
-                                            <td>{this.props.download.status}</td>
+                                            <td>{download.status}</td>
                                         </tr>
                                         <tr>
                                             <td>Comment</td>
-                                            <td>{this.props.download.comment}</td>
+                                            <td>{comment}</td>
                                         </tr>
                                         <tr>
                                             <td>Added on</td>
-                                            <td>{this.props.download.createdEpochMillis}</td>
+                                            <td>{createdString}</td>
                                         </tr>
                                     </tbody>
                                 </Table>
@@ -47,20 +85,20 @@ class TorrentView extends React.Component {
                                     <tbody>
                                     <tr>
                                         <td>DL Speed</td>
-                                        <td>{this.props.download.downloadBps}</td>
+                                        <td>{download.downloadBps === 0 ? "-" : formatSizeInBytes(download.downloadBps)+"/s"}</td>
                                     </tr>
                                     <tr>
                                         <td>DLed</td>
-                                        <td>{this.props.download.downloadedBytes}</td>
+                                        <td>{download.downloadedBytes === 0 ? "-" : formatSizeInBytes(download.downloadedBytes) + " (" + (download.downloadedBytes/download.sizeBytes*100).toFixed(0) + "%)"}</td>
                                     </tr>
                                     <tr>
                                         <td>Seeds</td>
-                                        <td>{this.props.download.connectedSeeds} ({this.props.download.scrapedSeeds})</td>
+                                        <td>{download.connectedSeeds} ({download.scrapedSeeds >= 0 ? download.scrapedSeeds : "-"})</td>
                                     </tr>
-                                    {this.props.download.etaSecs > 0 && (
+                                    {download.etaSecs > 0 && (
                                     <tr>
                                         <td>ETA</td>
-                                        <td>{this.props.download.etaSecs}</td>
+                                        <td>{etaString}</td>
                                     </tr>
                                     )}
                                     </tbody>
@@ -73,15 +111,15 @@ class TorrentView extends React.Component {
                                     <tbody>
                                     <tr>
                                         <td>UL Speed</td>
-                                        <td>{this.props.download.uploadBps}</td>
+                                        <td>{download.uploadBps === 0 ? "-" : formatSizeInBytes(download.uploadBps)+"/s"}</td>
                                     </tr>
                                     <tr>
                                         <td>ULed</td>
-                                        <td>{this.props.download.uploadedBytes}</td>
+                                        <td>{download.uploadedBytes === 0 ? "-" : formatSizeInBytes(download.uploadedBytes)}</td>
                                     </tr>
                                     <tr>
                                         <td>Leechers</td>
-                                        <td>{this.props.download.connectedLeechers} ({this.props.download.scrapedLeechers})</td>
+                                        <td>{download.connectedLeechers} ({download.scrapedLeechers >= 0 ? download.scrapedLeechers : "-"})</td>
                                     </tr>
                                     </tbody>
                                 </Table>
@@ -106,12 +144,10 @@ class TorrentView extends React.Component {
 
 }
 
-// TODO formatting
-// TODO scraped negatives
-// TODO active links in comments
 // TODO files table
 // TODO files link
 // TODO set priority
+// TODO torrent actions
 
 function mapStateToProps(state, own_props) {
     const hash = own_props.match.params.hash;
