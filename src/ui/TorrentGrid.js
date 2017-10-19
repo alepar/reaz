@@ -3,7 +3,6 @@ import React from 'react';
 import { connect } from "react-redux";
 
 import ReactDataGrid from "react-data-grid";
-import { ProgressBar } from "react-bootstrap";
 
 import dateFormat from "dateformat";
 
@@ -72,13 +71,6 @@ class TorrentGrid extends React.Component {
                 sortable: true,
             },
         ];
-
-        // TODO this should probably be kickstarted by <App/>
-        if (false !== this.props.gridstate.loading) {
-            this.props.dispatch({
-                type: "sagas.serverstate.fetch",
-            });
-        }
     }
 
     rowGetter(i) {
@@ -112,50 +104,32 @@ class TorrentGrid extends React.Component {
     }
 
     render() {
-        if (false === this.props.gridstate.loading) {
-            let selectedHashes = {};
-            if (this.props.gridstate.selectedHashes !== undefined) {
-                selectedHashes = this.props.gridstate.selectedHashes;
-            }
-            selectedHashes = Object.keys(selectedHashes);
-
-            return (<ReactDataGrid
-                        rowKey={"hash"}
-                        columns={this._columns}
-                        rowGetter={i => this.rowGetter(i)}
-                        rowsCount={this.props.gridstate.hashArray.length}
-                        minHeight={750}
-                        rowHeight={26}
-                        onGridSort={(col, dir) => this.handleGridSort(col, dir)}
-                        rowSelection={{
-                            showCheckbox: true,
-                            enableShiftSelect: true,
-                            onRowsSelected: r => this.onRowsSelected(r),
-                            onRowsDeselected: r => this.onRowsDeselected(r),
-                            selectBy: { keys: {
-                                rowKey: 'hash',
-                                values: selectedHashes,
-                            }}
-                        }}
-                    />);
-            // TODO https://stackoverflow.com/questions/36862334/get-viewport-window-height-in-reactjs
-        } else {
-            return (
-                <div style={{
-                        display: "inline-block",
-                        position: "fixed",
-                        top: 0,
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        width: "150px",
-                        height: "40px",
-                        margin: "auto",
-                }}>
-                    <ProgressBar active now={100}/>
-                </div>
-            );
+        let selectedHashes = {};
+        if (this.props.gridstate.selectedHashes !== undefined) {
+            selectedHashes = this.props.gridstate.selectedHashes;
         }
+        selectedHashes = Object.keys(selectedHashes);
+
+        return (<ReactDataGrid
+                    rowKey={"hash"}
+                    columns={this._columns}
+                    rowGetter={i => this.rowGetter(i)}
+                    rowsCount={this.props.gridstate.hashArray.length}
+                    minHeight={750}
+                    rowHeight={26}
+                    onGridSort={(col, dir) => this.handleGridSort(col, dir)}
+                    rowSelection={{
+                        showCheckbox: true,
+                        enableShiftSelect: true,
+                        onRowsSelected: r => this.onRowsSelected(r),
+                        onRowsDeselected: r => this.onRowsDeselected(r),
+                        selectBy: { keys: {
+                            rowKey: 'hash',
+                            values: selectedHashes,
+                        }}
+                    }}
+                />);
+        // TODO https://stackoverflow.com/questions/36862334/get-viewport-window-height-in-reactjs
     }
 }
 

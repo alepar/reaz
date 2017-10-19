@@ -22,7 +22,6 @@ function globalreducer(state, action) {
 
             const new_gridstate = Object.assign({}, gridstate);
 
-            new_gridstate.loading = false;
             const downloads = state.serverstate.downloads;
 
             new_gridstate.hashArray = [];
@@ -85,6 +84,7 @@ function serverstate(state = initialServerState(), action) {
     switch (action.type) {
         case "reducers.serverstate.update":
             new_state = merge(state, action.response.diff.updated);
+            new_state.loading = false;
 
             // TODO handle deleted
 
