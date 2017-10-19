@@ -22,6 +22,9 @@ class NavBar extends React.Component {
     }
 }
 
+// TODO list of open torrent views
+// TODO upload
+
 function mapStateToProps(state) {
     return {
 

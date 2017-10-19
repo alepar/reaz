@@ -7,7 +7,7 @@ import NavBar from "./NavBar";
 import QuickStats from "./QuickStats";
 import Options from "./Options";
 import Stats from "./Stats";
-import Browse from "./Browse";
+import TorrentView from "./TorrentView";
 
 export default class App extends React.Component {
 
@@ -27,7 +27,7 @@ export default class App extends React.Component {
                     <Route exact path={"/"} component={TorrentGrid}/>
                     <Route path={"/options"} component={Options}/>
                     <Route path={"/stats"} component={Stats}/>
-                    <Route path={"/browse/:hash"} component={Browse}/>
+                    <Route path={"/torrent/:hash"} component={TorrentView}/>
                 </div>
             </div>
         );

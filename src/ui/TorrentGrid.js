@@ -8,6 +8,7 @@ import { ProgressBar } from "react-bootstrap";
 import dateFormat from "dateformat";
 
 import { formatSizeInBytes } from "./Util";
+import TorrentLink from "./TorrentLink";
 
 class TorrentGrid extends React.Component {
 
@@ -25,6 +26,8 @@ class TorrentGrid extends React.Component {
                 key: 'torrentName',
                 name: 'Name',
                 sortable: true,
+                formatter: NameFormatter,
+                getRowMetaData: (row) => row,
             }, {
                 key: 'status',
                 name: 'Status',
@@ -38,7 +41,7 @@ class TorrentGrid extends React.Component {
                 sortable: true,
                 formatter: DoneFormatter,
                 cellClass: "aligncenter",
-                getRowMetaData: (row) => row
+                getRowMetaData: (row) => row,
             }, {
                 key: 'sizeBytes',
                 name: 'Size',
@@ -217,6 +220,15 @@ class DoneFormatter extends React.Component {
     }
 }
 
+class NameFormatter extends React.Component {
+    render() {
+        const row = this.props.dependentValues;
+        return (
+            <TorrentLink hash={row.hash} name={row.torrentName} />
+        );
+    }
+}
+
 function mapStateToProps(state) {
     return ({
         downloads: state.serverstate.downloads || {},
@@ -228,3 +240,4 @@ export default connect(mapStateToProps)(TorrentGrid);
 
 // todo search https://stackoverflow.com/questions/6334692/how-to-use-a-lucene-analyzer-to-tokenize-a-string
 // todo start/stop/force/delete actions
+// todo position column
