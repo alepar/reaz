@@ -9,40 +9,6 @@ class TorrentView extends React.Component {
 
     render() {
         const download = this.props.download;
-
-        const createdEpochMillis = download.createdEpochMillis / 1000;
-        const createdDate = new Date(0);
-        createdDate.setUTCSeconds(createdEpochMillis);
-        const createdString = dateFormat(createdDate, "yyyy/mm/dd HH:MM Z");
-
-        let comment;
-        if (download.comment.match("^\\w+://.*$")) {
-            comment = <a href={download.comment} target={"_blank"}>{download.comment}</a>;
-        } else {
-            comment = <span>{download.comment}</span>;
-        }
-
-        let etaValue = download.etaSecs;
-        let etaSuffix = " sec";
-        if (etaValue > 60) {
-            etaValue /= 60;
-            etaSuffix = " min";
-        }
-        if (etaValue > 60) {
-            etaValue /= 60;
-            etaSuffix = " hrs";
-        }
-        if (etaValue > 24) {
-            etaValue /= 24;
-            etaSuffix = " days";
-        }
-        let etaString;
-        if (etaValue > 30) {
-            etaString = "\u221E"
-        } else {
-            etaString = etaValue.toFixed(0) + etaSuffix;
-        }
-
         return (
             <div>
                 <Grid>
@@ -69,11 +35,11 @@ class TorrentView extends React.Component {
                                         </tr>
                                         <tr>
                                             <td>Comment</td>
-                                            <td>{comment}</td>
+                                            <td>{formatComment(download.comment)}</td>
                                         </tr>
                                         <tr>
                                             <td>Added on</td>
-                                            <td>{createdString}</td>
+                                            <td>{formatEpochMillis(download.createdEpochMillis)}</td>
                                         </tr>
                                     </tbody>
                                 </Table>
@@ -98,7 +64,7 @@ class TorrentView extends React.Component {
                                     {download.etaSecs > 0 && (
                                     <tr>
                                         <td>ETA</td>
-                                        <td>{etaString}</td>
+                                        <td>{formatEta(download.etaSecs)}</td>
                                     </tr>
                                     )}
                                     </tbody>
@@ -142,6 +108,42 @@ class TorrentView extends React.Component {
         );
     }
 
+}
+
+function formatEpochMillis(createdEpochMillis) {
+    const createdDate = new Date(0);
+    createdDate.setUTCSeconds(createdEpochMillis / 1000);
+    return dateFormat(createdDate, "yyyy/mm/dd HH:MM Z");
+}
+
+function formatEta(etaValue) {
+    let etaSuffix = " sec";
+    if (etaValue > 60) {
+        etaValue /= 60;
+        etaSuffix = " min";
+    }
+    if (etaValue > 60) {
+        etaValue /= 60;
+        etaSuffix = " hrs";
+    }
+    if (etaValue > 24) {
+        etaValue /= 24;
+        etaSuffix = " days";
+    }
+
+    if (etaValue > 30) {
+        return "\u221E"
+    } else {
+        return etaValue.toFixed(0) + etaSuffix;
+    }
+}
+
+function formatComment(comment) {
+    if (comment.match("^\\w+://.*$")) {
+        return <a href={comment} target={"_blank"}>{comment}</a>;
+    } else {
+        return <span>{comment}</span>;
+    }
 }
 
 // TODO files table
