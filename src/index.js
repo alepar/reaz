@@ -36,3 +36,5 @@ ReactDOM.render(
 );
 
 registerServiceWorker();
+
+// TODO http://lab.ejci.net/favico.js/ :)
