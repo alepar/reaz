@@ -21,6 +21,7 @@ data class RestDownload(
 )
 
 data class RestDownloadFile(
+        val idx: Int,
         val path: String,
         val sizeBytes: Long,
         val downloadedBytes: Long,

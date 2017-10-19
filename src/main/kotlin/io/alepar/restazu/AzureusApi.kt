@@ -58,6 +58,7 @@ class PluginInterfaceAzureusApi(iface: PluginInterface) : AzureusApi {
                                 { it.index },
                                 { file ->
                                     RestDownloadFile(
+                                            file.index,
                                             extractTorrentFileName(download, file), // torrent.files[it.index].name is *very* slow
                                             file.length,
                                             file.downloaded,
