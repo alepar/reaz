@@ -1,33 +1,94 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from "react-redux";
 import { Table, Panel, Grid, Row, Col } from "react-bootstrap";
 import dateFormat from "dateformat";
+import ReactDataGrid from "react-data-grid";
 
 import { formatSizeInBytes } from "./Util";
 
 class TorrentView extends React.Component {
 
+    constructor(props) {
+        super(props);
+
+        this._columns = [
+            {
+                key: 'idx',
+                name: '#',
+                cellClass: "aligncenter",
+                sortable: true,
+                width: 40,
+            },             {
+                key: 'path',
+                name: 'File name',
+                sortable: true,
+            }, {
+                key: 'done',
+                name: 'Done',
+                width: 60,
+                sortable: true,
+                formatter: DoneFormatter,
+                cellClass: "aligncenter",
+                getRowMetaData: (row) => row,
+            }, {
+                key: 'sizeBytes',
+                name: 'Size',
+                width: 65,
+                formatter: SizeFormatter,
+                cellClass: "alignright",
+                sortable: true,
+            }, {
+                key: 'priority',
+                name: 'Priority',
+                width: 100,
+                cellClass: "aligncenter",
+                sortable: true,
+            },
+        ];
+    }
+
+    handleGridSort(sortColumn, sortDirection) {
+        this.props.dispatch({
+            type: "reducers.torrentview.sortchanged",
+            hash: this.props.hash,
+            sortColumn: sortColumn,
+            sortDirection: sortDirection,
+        });
+    }
+
+    rowGetter(sortedIndexes, i) {
+        if (this.props.state.sortDirection === "DESC") {
+            return this.props.files[sortedIndexes[sortedIndexes.length - i - 1]];
+        } else {
+            return this.props.files[sortedIndexes[i]];
+        }
+    }
+
     render() {
         const download = this.props.download;
+        const sortedIndexes = this.calculateSortedIndexes();
+
         return (
             <div>
                 <Grid>
+                    <Row className="show-grid">
+                        <Col xs={12}>
+                            <h4>{download.torrentName}</h4>
+                        </Col>
+                    </Row>
                     <Row className="show-grid">
                         <Col xs={6}>
                             <Panel header="Details">
                                 <Table condensed striped>
                                     <tbody>
                                         <tr>
-                                            <td>Name</td>
-                                            <td>{download.torrentName}</td>
+                                            <td>Added on</td>
+                                            <td>{formatEpochMillis(download.createdEpochMillis)}</td>
                                         </tr>
                                         <tr>
                                             <td>Size</td>
                                             <td>{formatSizeInBytes(download.sizeBytes)}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Hash</td>
-                                            <td>{download.hash}</td>
                                         </tr>
                                         <tr>
                                             <td>Status</td>
@@ -38,8 +99,8 @@ class TorrentView extends React.Component {
                                             <td>{formatComment(download.comment)}</td>
                                         </tr>
                                         <tr>
-                                            <td>Added on</td>
-                                            <td>{formatEpochMillis(download.createdEpochMillis)}</td>
+                                            <td>Hash</td>
+                                            <td>{download.hash}</td>
                                         </tr>
                                     </tbody>
                                 </Table>
@@ -96,9 +157,15 @@ class TorrentView extends React.Component {
                     <Row className="show-grid">
                         <Col xs={12}>
                             <Panel header="Files">
-                                <div style={{whiteSpace: "pre-wrap"}}>
-                                    {JSON.stringify(this.props.files, null, 2)}
-                                </div>
+                                <ReactDataGrid
+                                    rowKey={"idx"}
+                                    columns={this._columns}
+                                    rowGetter={i => this.rowGetter(sortedIndexes, i)}
+                                    rowsCount={Object.keys(this.props.files).length}
+                                    minHeight={400}
+                                    rowHeight={26}
+                                    onGridSort={(col, dir) => this.handleGridSort(col, dir)}
+                                />
                             </Panel>
                         </Col>
                     </Row>
@@ -108,6 +175,35 @@ class TorrentView extends React.Component {
         );
     }
 
+    calculateSortedIndexes() {
+        const files = this.props.files;
+        const sortedIndexes = Object.keys(files);
+
+        const sortColumn = this.props.state.sortColumn === undefined || this.props.state.sortDirection === "NONE" ? "idx" : this.props.state.sortColumn;
+
+        let valueExtractor = idx => files[idx][sortColumn];
+        let valueComparator = (l, r) => {
+            if (l < r) return -1;
+            if (l === r) return 0;
+            return 1;
+        };
+
+        switch (sortColumn) {
+            case "path":
+                valueComparator = Intl.Collator().compare;
+                break;
+            case "done":
+                valueExtractor = idx => files[idx].downloadedBytes / files[idx].sizeBytes;
+                break;
+            default:
+        }
+        sortedIndexes.sort((l, r) => {
+            let vall = valueExtractor(l);
+            let valr = valueExtractor(r);
+            return valueComparator(vall, valr);
+        });
+        return sortedIndexes;
+    }
 }
 
 function formatEpochMillis(createdEpochMillis) {
@@ -146,10 +242,41 @@ function formatComment(comment) {
     }
 }
 
-// TODO files table
+class SizeFormatter extends React.Component {
+    render() {
+        if (0 === this.props.value) {
+            return (
+                <div>-</div>
+            );
+        } else {
+            return (
+                <div>{formatSizeInBytes(this.props.value)}</div>
+            );
+        }
+    }
+}
+
+SizeFormatter.propTypes = {
+    value: PropTypes.number.isRequired
+};
+
+class DoneFormatter extends React.Component {
+    render() {
+        const row = this.props.dependentValues;
+        let pct = row.downloadedBytes / row.sizeBytes * 100;
+        if (pct > 100) pct = 100;
+        pct = pct.toFixed(0);
+        return (
+            <div>{pct}%</div>
+        );
+    }
+}
+
 // TODO files link
 // TODO set priority
 // TODO torrent actions
+// TODO external links (also send "reducers.ui.navbar.additem" when opened)
+// TODO figure out size of the table
 
 function mapStateToProps(state, own_props) {
     const hash = own_props.match.params.hash;
@@ -157,6 +284,7 @@ function mapStateToProps(state, own_props) {
         hash: hash,
         download: state.serverstate.downloads[hash],
         files: state.serverstate.downloadFiles[hash],
+        state: state.ui.torrentview[hash] || {},
     });
 }
 export default connect(mapStateToProps)(TorrentView);

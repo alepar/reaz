@@ -115,9 +115,8 @@ function serverstate(state = initialServerState(), action) {
 
 function initialUiState() {
     return {
-        torrentgrid: {
-
-        }
+        torrentgrid: {},
+        torrentview: {},
     };
 }
 function ui(state = initialUiState(), action) {
@@ -140,15 +139,37 @@ function ui(state = initialUiState(), action) {
                 }
             }
 
-            const removedOldSelection = merge(state, {torrentgrid: { selectedHashes: undefined}});
-            return merge(removedOldSelection, {torrentgrid: { selectedHashes: selectedHashes}});
+            return replace(state, selectedHashes, "torrentgrid", "selectedHashes");
+
+        case "reducers.torrentview.sortchanged":
+            const hash = action.hash;
+            const viewstate = state.torrentview[hash] || {};
+
+            const new_viewstate = merge(viewstate, {
+                sortColumn: action.sortColumn,
+                sortDirection: action.sortDirection,
+            });
+            return replace(state, new_viewstate, "torrentview", hash);
 
         default:
             return state;
     }
 }
 
-export function merge(oldobj, newobj) {
+function replace(obj, newval, ...path) {
+    if (obj === undefined) obj = {};
+    const newobj = Object.assign({}, obj);
+
+    if (path.length === 1) {
+        newobj[path[0]] = newval;
+    } else {
+        newobj[path[0]] = replace(obj[path[0]], newval, path.slice(1, path.length));
+    }
+
+    return newobj;
+}
+
+function merge(oldobj, newobj) {
     if (!isObject(newobj) || !isObject(oldobj)) {
         return newobj;
     }
