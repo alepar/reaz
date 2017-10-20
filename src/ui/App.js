@@ -64,6 +64,9 @@ class App extends React.Component {
 
 }
 
+// TODO do not rerender torrent grid, it is expensive and loses grid's state like scroll position, etc
+// https://github.com/ReactTraining/react-router/issues/4988
+
 function mapStateToProps(state) {
     return ({
         loading: state.serverstate.loading,

@@ -46,6 +46,14 @@ class TorrentView extends React.Component {
                 sortable: true,
             },
         ];
+
+        props.dispatch({
+            type: "reducers.ui.viewhistory.additem",
+            item: {
+                name: props.download.torrentName,
+                hash: props.download.hash,
+            }
+        });
     }
 
     handleGridSort(sortColumn, sortDirection) {
@@ -156,17 +164,15 @@ class TorrentView extends React.Component {
 
                     <Row className="show-grid">
                         <Col xs={12}>
-                            <Panel header="Files">
-                                <ReactDataGrid
-                                    rowKey={"idx"}
-                                    columns={this._columns}
-                                    rowGetter={i => this.rowGetter(sortedIndexes, i)}
-                                    rowsCount={Object.keys(this.props.files).length}
-                                    minHeight={400}
-                                    rowHeight={26}
-                                    onGridSort={(col, dir) => this.handleGridSort(col, dir)}
-                                />
-                            </Panel>
+                            <ReactDataGrid
+                                rowKey={"idx"}
+                                columns={this._columns}
+                                rowGetter={i => this.rowGetter(sortedIndexes, i)}
+                                rowsCount={Object.keys(this.props.files).length}
+                                minHeight={400}
+                                rowHeight={26}
+                                onGridSort={(col, dir) => this.handleGridSort(col, dir)}
+                            />
                         </Col>
                     </Row>
                 </Grid>
@@ -275,7 +281,6 @@ class DoneFormatter extends React.Component {
 // TODO files link
 // TODO set priority
 // TODO torrent actions
-// TODO external links (also send "reducers.ui.navbar.additem" when opened)
 // TODO figure out size of the table
 
 function mapStateToProps(state, own_props) {

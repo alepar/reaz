@@ -117,6 +117,7 @@ function initialUiState() {
     return {
         torrentgrid: {},
         torrentview: {},
+        viewhistory: [],
     };
 }
 function ui(state = initialUiState(), action) {
@@ -150,6 +151,20 @@ function ui(state = initialUiState(), action) {
                 sortDirection: action.sortDirection,
             });
             return replace(state, new_viewstate, "torrentview", hash);
+
+        case "reducers.ui.viewhistory.additem":
+            const viewhistory = state.viewhistory;
+
+            let new_viewhistory = viewhistory.filter(it => it.hash !== action.item.hash);
+            let newend = new_viewhistory.length;
+            if (new_viewhistory.length === 20) {
+                newend=19;
+            }
+            new_viewhistory = new_viewhistory.slice(0, newend);
+
+            new_viewhistory.unshift(action.item);
+
+            return replace(state, new_viewhistory, "viewhistory");
 
         default:
             return state;
