@@ -118,10 +118,37 @@ function initialUiState() {
         torrentgrid: {},
         torrentview: {},
         viewhistory: [],
+        upload: {},
     };
 }
 function ui(state = initialUiState(), action) {
     switch (action.type) {
+        case "reducers.ui.upload.removeitem": {
+            const uploadstate = state.upload;
+            const id = action.id;
+
+            if (uploadstate.items) {
+                const new_items = uploadstate.items.filter(i => i.id !== id);
+                return replace(state, new_items, "upload", "items");
+            }
+
+            return state;
+        }
+
+        case "reducers.ui.upload.additem": {
+            const uploadstate = state.upload;
+            const item = action.item;
+            const new_id = uploadstate.nextid === undefined ? 0 : uploadstate.nextid;
+
+            const new_uploadstate = Object.assign({}, uploadstate);
+            new_uploadstate.nextid = new_id + 1;
+            item.id = new_id;
+            new_uploadstate.items = new_uploadstate.items ? new_uploadstate.items.slice() : [];
+            new_uploadstate.items.push(item);
+
+            return replace(state, new_uploadstate, "upload");
+        }
+
         case "reducers.ui.torrentgtid.hashSelectionChanged":
             const gridstate = state.torrentgrid;
             const selectedHashes = {};

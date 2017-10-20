@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from "react-redux";
-import { Nav, NavItem, NavDropdown, MenuItem } from "react-bootstrap";
+import { Nav, NavItem, NavDropdown, MenuItem, Glyphicon } from "react-bootstrap";
 import { withRouter } from 'react-router-dom'
 import { LinkContainer } from "react-router-bootstrap";
 
@@ -17,21 +17,23 @@ class NavBar extends React.Component {
     }
 
     render() {
-
         return (
             <Nav bsStyle={"tabs"}>
                 <LinkContainer exact to={"/"}>
-                    <NavItem>List</NavItem>
+                    <NavItem><Glyphicon glyph="th-list" /></NavItem>
+                </LinkContainer>
+                <LinkContainer to={"/upload"}>
+                    <NavItem><Glyphicon glyph="plus" /></NavItem>
                 </LinkContainer>
                 <LinkContainer to={"/stats"}>
-                    <NavItem>Stats</NavItem>
+                    <NavItem><Glyphicon glyph="stats" /></NavItem>
                 </LinkContainer>
                 <LinkContainer to={"/options"}>
-                    <NavItem>Options</NavItem>
+                    <NavItem><Glyphicon glyph="cog" /></NavItem>
                 </LinkContainer>
                 <NavDropdown
                     id="nav-dropdown"
-                    title={"View" + (this.props.isTorrentViewPage ? ": "+this.props.torrentName : "")}
+                    title={<Glyphicon glyph="eye-open" />}
                     disabled={this.props.viewhistory.length === 0}
                     active={this.props.isTorrentViewPage}
                 >
@@ -41,9 +43,6 @@ class NavBar extends React.Component {
         );
     }
 }
-
-// TODO list of open torrent views
-// TODO upload
 
 function mapStateToProps(state, own_props) {
     const urlpath = own_props.location.pathname;

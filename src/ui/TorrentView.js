@@ -78,106 +78,103 @@ class TorrentView extends React.Component {
         const sortedIndexes = this.calculateSortedIndexes();
 
         return (
-            <div>
-                <Grid>
-                    <Row className="show-grid">
-                        <Col xs={12}>
-                            <h4>{download.torrentName}</h4>
-                        </Col>
-                    </Row>
-                    <Row className="show-grid">
-                        <Col xs={6}>
-                            <Panel header="Details">
-                                <Table condensed striped>
-                                    <tbody>
-                                        <tr>
-                                            <td>Added on</td>
-                                            <td>{formatEpochMillis(download.createdEpochMillis)}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Size</td>
-                                            <td>{formatSizeInBytes(download.sizeBytes)}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Status</td>
-                                            <td>{download.status}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Comment</td>
-                                            <td>{formatComment(download.comment)}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Hash</td>
-                                            <td>{download.hash}</td>
-                                        </tr>
-                                    </tbody>
-                                </Table>
-                            </Panel>
-                        </Col>
-                        <Col xs={3}>
-                            <Panel header="Download">
-                                <Table condensed striped>
-                                    <tbody>
+            <Grid>
+                <Row className="show-grid">
+                    <Col xs={12}>
+                        <h4>{download.torrentName}</h4>
+                    </Col>
+                </Row>
+                <Row className="show-grid">
+                    <Col xs={6}>
+                        <Panel header="Details">
+                            <Table condensed striped>
+                                <tbody>
                                     <tr>
-                                        <td>DL Speed</td>
-                                        <td>{download.downloadBps === 0 ? "-" : formatSizeInBytes(download.downloadBps)+"/s"}</td>
+                                        <td>Added on</td>
+                                        <td>{formatEpochMillis(download.createdEpochMillis)}</td>
                                     </tr>
                                     <tr>
-                                        <td>DLed</td>
-                                        <td>{download.downloadedBytes === 0 ? "-" : formatSizeInBytes(download.downloadedBytes) + " (" + (download.downloadedBytes/download.sizeBytes*100).toFixed(0) + "%)"}</td>
+                                        <td>Size</td>
+                                        <td>{formatSizeInBytes(download.sizeBytes)}</td>
                                     </tr>
                                     <tr>
-                                        <td>Seeds</td>
-                                        <td>{download.connectedSeeds} ({download.scrapedSeeds >= 0 ? download.scrapedSeeds : "-"})</td>
-                                    </tr>
-                                    {download.etaSecs > 0 && (
-                                    <tr>
-                                        <td>ETA</td>
-                                        <td>{formatEta(download.etaSecs)}</td>
-                                    </tr>
-                                    )}
-                                    </tbody>
-                                </Table>
-                            </Panel>
-                        </Col>
-                        <Col xs={3}>
-                            <Panel header="Upload">
-                                <Table condensed striped>
-                                    <tbody>
-                                    <tr>
-                                        <td>UL Speed</td>
-                                        <td>{download.uploadBps === 0 ? "-" : formatSizeInBytes(download.uploadBps)+"/s"}</td>
+                                        <td>Status</td>
+                                        <td>{download.status}</td>
                                     </tr>
                                     <tr>
-                                        <td>ULed</td>
-                                        <td>{download.uploadedBytes === 0 ? "-" : formatSizeInBytes(download.uploadedBytes)}</td>
+                                        <td>Comment</td>
+                                        <td>{formatComment(download.comment)}</td>
                                     </tr>
                                     <tr>
-                                        <td>Leechers</td>
-                                        <td>{download.connectedLeechers} ({download.scrapedLeechers >= 0 ? download.scrapedLeechers : "-"})</td>
+                                        <td>Hash</td>
+                                        <td>{download.hash}</td>
                                     </tr>
-                                    </tbody>
-                                </Table>
-                            </Panel>
-                        </Col>
-                    </Row>
+                                </tbody>
+                            </Table>
+                        </Panel>
+                    </Col>
+                    <Col xs={3}>
+                        <Panel header="Download">
+                            <Table condensed striped>
+                                <tbody>
+                                <tr>
+                                    <td>DL Speed</td>
+                                    <td>{download.downloadBps === 0 ? "-" : formatSizeInBytes(download.downloadBps)+"/s"}</td>
+                                </tr>
+                                <tr>
+                                    <td>DLed</td>
+                                    <td>{download.downloadedBytes === 0 ? "-" : formatSizeInBytes(download.downloadedBytes) + " (" + (download.downloadedBytes/download.sizeBytes*100).toFixed(0) + "%)"}</td>
+                                </tr>
+                                <tr>
+                                    <td>Seeds</td>
+                                    <td>{download.connectedSeeds} ({download.scrapedSeeds >= 0 ? download.scrapedSeeds : "-"})</td>
+                                </tr>
+                                {download.etaSecs > 0 && (
+                                <tr>
+                                    <td>ETA</td>
+                                    <td>{formatEta(download.etaSecs)}</td>
+                                </tr>
+                                )}
+                                </tbody>
+                            </Table>
+                        </Panel>
+                    </Col>
+                    <Col xs={3}>
+                        <Panel header="Upload">
+                            <Table condensed striped>
+                                <tbody>
+                                <tr>
+                                    <td>UL Speed</td>
+                                    <td>{download.uploadBps === 0 ? "-" : formatSizeInBytes(download.uploadBps)+"/s"}</td>
+                                </tr>
+                                <tr>
+                                    <td>ULed</td>
+                                    <td>{download.uploadedBytes === 0 ? "-" : formatSizeInBytes(download.uploadedBytes)}</td>
+                                </tr>
+                                <tr>
+                                    <td>Leechers</td>
+                                    <td>{download.connectedLeechers} ({download.scrapedLeechers >= 0 ? download.scrapedLeechers : "-"})</td>
+                                </tr>
+                                </tbody>
+                            </Table>
+                        </Panel>
+                    </Col>
+                </Row>
 
-                    <Row className="show-grid">
-                        <Col xs={12}>
-                            <ReactDataGrid
-                                rowKey={"idx"}
-                                columns={this._columns}
-                                rowGetter={i => this.rowGetter(sortedIndexes, i)}
-                                rowsCount={Object.keys(this.props.files).length}
-                                minHeight={400}
-                                rowHeight={26}
-                                onGridSort={(col, dir) => this.handleGridSort(col, dir)}
-                            />
-                        </Col>
-                    </Row>
-                </Grid>
-
-            </div>
+                <Row className="show-grid">
+                    <Col xs={12}>
+                        <ReactDataGrid
+                            rowKey={"idx"}
+                            columns={this._columns}
+                            rowGetter={i => this.rowGetter(sortedIndexes, i)}
+                            rowsCount={Object.keys(this.props.files).length}
+                            minHeight={400}
+                            rowHeight={26}
+                            onGridSort={(col, dir) => this.handleGridSort(col, dir)}
+                        />
+                    </Col>
+                </Row>
+            </Grid>
         );
     }
 
