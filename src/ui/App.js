@@ -1,15 +1,17 @@
 import React from 'react';
 import { connect } from "react-redux";
-import { Route } from 'react-router';
+import {Route, Switch} from 'react-router';
 import { withRouter } from 'react-router-dom';
 import reticulate from 'reticulating-splines';
 
+import AlwaysMountedRoute from "./AlwaysMountedRoute";
 import TorrentGrid from "./TorrentGrid";
 import NavBar from "./NavBar";
 import QuickStats from "./QuickStats";
 import Options from "./Options";
 import Stats from "./Stats";
 import TorrentView from "./TorrentView";
+import Upload from "./Upload";
 
 class App extends React.Component {
 
@@ -69,10 +71,13 @@ class App extends React.Component {
                     </div>
 
                     <div>
-                        <Route exact path={"/"} component={TorrentGrid}/>
-                        <Route path={"/options"} component={Options}/>
-                        <Route path={"/stats"} component={Stats}/>
-                        <Route path={"/torrent/:hash"} component={TorrentView}/>
+                        <AlwaysMountedRoute path={"/"} component={TorrentGrid}/>
+                        <Switch>
+                            <Route path={"/upload"} component={Upload}/>
+                            <Route path={"/options"} component={Options}/>
+                            <Route path={"/stats"} component={Stats}/>
+                            <Route path={"/torrent/:hash"} component={TorrentView}/>
+                        </Switch>
                     </div>
                 </div>
             );
@@ -81,10 +86,7 @@ class App extends React.Component {
 
 }
 
-// TODO do not rerender torrent grid, it is expensive and loses grid's state like scroll position, etc
-// https://github.com/ReactTraining/react-router/issues/4988
-
-function mapStateToProps(state) {
+function mapStateToProps(state, own_props) {
     return ({
         loading: state.serverstate.loading,
     });
