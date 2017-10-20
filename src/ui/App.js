@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from "react-redux";
 import { Route } from 'react-router';
 import { withRouter } from 'react-router-dom';
+import reticulate from 'reticulating-splines';
 
 import TorrentGrid from "./TorrentGrid";
 import NavBar from "./NavBar";
@@ -25,6 +26,7 @@ class App extends React.Component {
     render() {
         if (this.props.loading === true) {
             return (
+                <div>
                 <div style={{
                     display: "inline-block",
                     position: "fixed",
@@ -33,10 +35,25 @@ class App extends React.Component {
                     left: 0,
                     right: 0,
                     width: "120px",
-                    height: "120px",
+                    height: "140px",
                     margin: "auto",
                 }}>
                     <div className="loader"/>
+                </div>
+                <div style={{
+                    display: "inline-block",
+                    position: "fixed",
+                    top: 150,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    width: "300px",
+                    height: "20px",
+                    margin: "auto",
+                    textAlign: "center",
+                }}>
+                    <div>{reticulate.random()}</div>
+                </div>
                 </div>
             );
         } else {

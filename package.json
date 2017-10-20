@@ -20,7 +20,8 @@
     "react-router-redux": "^5.0.0-alpha.7",
     "react-scripts": "1.0.14",
     "redux": "^3.7.2",
-    "redux-saga": "^0.15.6"
+    "redux-saga": "^0.15.6",
+    "reticulating-splines": "^1.0.2"
   },
   "devDependencies": {
     "riek": "^1.1.0"
