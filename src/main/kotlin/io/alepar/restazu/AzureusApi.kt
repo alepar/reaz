@@ -1,9 +1,13 @@
 package io.alepar.restazu
 
+import io.javalin.UploadedFile
 import org.gudy.azureus2.plugins.PluginConfig
 import org.gudy.azureus2.plugins.PluginInterface
 import org.gudy.azureus2.plugins.disk.DiskManagerFileInfo
 import org.gudy.azureus2.plugins.download.Download
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 
 interface AzureusApi {
 
@@ -13,12 +17,25 @@ interface AzureusApi {
 
     fun getSpeedLimits() : RestSpeedLimits;
 
+    fun upload(uploadedFiles: List<UploadedFile>)
 }
 
 class PluginInterfaceAzureusApi(iface: PluginInterface) : AzureusApi {
 
     private val downloadManager = iface.downloadManager
-    private val config = iface.pluginconfig;
+    private val config = iface.pluginconfig
+    private val utilities = iface.utilities
+    private val torrentManager = iface.torrentManager
+
+    override fun upload(uploadedFiles: List<UploadedFile>) {
+        uploadedFiles.forEach { file ->
+            val baos = ByteArrayOutputStream()
+            file.content.copyTo(baos)
+            val torrent = torrentManager.createFromBEncodedData(baos.toByteArray())
+
+            downloadManager.addDownload(torrent)
+        }
+    }
 
     override fun getDownloads(): Map<String, RestDownload> {
         return downloadManager.downloads

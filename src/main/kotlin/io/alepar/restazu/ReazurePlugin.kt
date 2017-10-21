@@ -4,9 +4,6 @@ import io.javalin.ApiBuilder.*
 import io.javalin.Javalin
 import org.gudy.azureus2.plugins.Plugin
 import org.gudy.azureus2.plugins.PluginInterface
-import org.gudy.azureus2.plugins.disk.DiskManagerFileInfo
-import org.gudy.azureus2.plugins.download.Download
-import org.gudy.azureus2.plugins.download.DownloadManager
 import java.net.InetAddress
 import java.net.InetSocketAddress
 
@@ -53,6 +50,16 @@ class AzureusRestApi(private val iface: PluginInterface) {
                             ctx.json(incremental)
                         }
                     }
+
+                    path("upload") { ->
+
+                        post { ctx ->
+                            val uploadedFiles = ctx.uploadedFiles("files")
+                            azureus.upload(uploadedFiles)
+                            ctx.status(200);
+                        }
+
+                    }
                 }
 
                 path("public") { ->
@@ -60,6 +67,16 @@ class AzureusRestApi(private val iface: PluginInterface) {
                 }
             }
         })
+
+        app.before { ctx ->
+            ctx.header("Access-Control-Allow-Origin", "*")
+        }
+
+        app.options("/*") { ctx ->
+            ctx.header("Access-Control-Allow-Methods", "post, get, options")
+            ctx.header("Access-Control-Allow-Headers", "Content-Type")
+            ctx.status(200)
+        }
 
     }
 
