@@ -124,6 +124,19 @@ function initialUiState() {
 }
 function ui(state = initialUiState(), action) {
     switch (action.type) {
+        case "reducers.ui.upload.uploading": {
+            return merge(state, {upload: {uploading: true}});
+        }
+
+        case "reducers.ui.upload.uploaded": {
+            if (action.success) {
+                return merge(state, {upload: {uploading: false, nextid: 0, items: []}})
+            } else {
+                // TODO indicate upload failure
+                return merge(state, {upload: {uploading: false}})
+            }
+        }
+
         case "reducers.ui.alwaysmounted.showing": {
             const add_alwaysmounted = {};
             add_alwaysmounted[action.path] = true;

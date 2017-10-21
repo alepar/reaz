@@ -24,16 +24,18 @@ class Upload extends React.Component {
     }
 
     renderItem(item) {
+        const uploading = this.props.uploading;
+
         return (<tr key={item.id}>
             <td>{item.name}</td>
             <td>{item.filename}</td>
             <td>{formatSizeInBytes(item.size)}</td>
             <td>{item.filesCount}</td>
-            <td>
+            { !uploading && <td>
                 <a href={""} onClick={(e) => { e.preventDefault(); this.removeItem(item.id); }}>
                     <Glyphicon glyph={"remove"}/>
                 </a>
-            </td>
+            </td>}
         </tr>)
     }
 
@@ -43,32 +45,38 @@ class Upload extends React.Component {
         });
     }
 
+    handleSubmit() {
+        this.props.dispatch({
+            type: "sagas.ui.upload.submit",
+            files: this.props.items.map(i => i.file),
+        });
+    }
+
     render() {
+        const uploading = this.props.uploading;
+
         return (
             <Grid>
-                <Row className="show-grid">
-                    <Col xs={12}>
-                        <h4>Upload</h4>
-                    </Col>
-                </Row>
                 <Row>
-                    <Col xs={12}>
+                    <Col xs={4}>
                         <FormControl id={"fileinput"} style={{display: "none"}} type={"file"} onChange={e => this.handleFiles(e.target.files)} multiple accept={".torrent"}/>
                         <ButtonToolbar>
                             <ButtonGroup>
-                                <Button bsStyle="success" disabled={this.props.items.length === 0}>Submit</Button>
+                                <Button bsStyle="success" disabled={this.props.items.length === 0 || uploading} onClick={() => this.handleSubmit()}>Upload</Button>
                             </ButtonGroup>
                             <ButtonGroup>
-                                <Button bsStyle="primary" onClick={() => document.getElementById("fileinput").click()}>Add local file</Button>
-                                <Button bsStyle="primary">Add URL</Button>
+                                <Button bsStyle="primary" onClick={() => document.getElementById("fileinput").click()} disabled={uploading}>Add local file</Button>
+                                <Button bsStyle="primary" disabled={uploading}>Add URL</Button>
                             </ButtonGroup>
                             <ButtonGroup>
-                                <Button onClick={() => this.handleCancel()} disabled={this.props.items.length === 0}>Cancel</Button>
+                                <Button onClick={() => this.handleCancel()} disabled={this.props.items.length === 0 || uploading}>Cancel</Button>
                             </ButtonGroup>
                         </ButtonToolbar>
 
                     </Col>
+                    <Col xs={1}><div className={"uploading"} style={{display: uploading ? "block" : "none"}} /></Col>
                 </Row>
+
                 {this.props.items.length > 0 && <Row className="show-grid">
                     <Col xs={12}>
                         <Table>
@@ -98,6 +106,7 @@ class Upload extends React.Component {
 function mapStateToProps(state, own_props) {
     return ({
         items: state.ui.upload.items || [],
+        uploading: state.ui.upload.uploading === undefined ? false : state.ui.upload.uploading,
     });
 }
 export default connect(mapStateToProps)(Upload);

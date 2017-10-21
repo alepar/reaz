@@ -275,7 +275,7 @@ class DoneFormatter extends React.Component {
     }
 }
 
-// TODO files link
+// TODO files link (https://www.npmjs.com/package/react-clipboard.js)
 // TODO set priority
 // TODO torrent actions
 // TODO figure out size of the table

@@ -9,6 +9,7 @@ export function* sagas() {
     yield [
         fork(takeLatest, "sagas.serverstate.fetch", serverstateFetchList),
         fork(takeEvery, "sagas.ui.upload.addlocal", uiUploadAddLocal),
+        fork(takeLatest, "sagas.ui.upload.submit", uiUploadSubmit),
     ]
 }
 
@@ -41,7 +42,7 @@ export function* uiUploadAddLocal(action) {
             type: "local",
             name: name,
             filename: action.file.name,
-            text: text,
+            file: action.file,
             size: totalSize,
             filesCount: filesCount,
         }
@@ -62,6 +63,29 @@ function promisify(obj) {
     })
 }
 
+export function* uiUploadSubmit(action) {
+    const files = action.files;
+
+    try {
+        yield put({
+            type: "reducers.ui.upload.uploading",
+        });
+
+        const response = yield call(Restazu.upload, {files: files});
+
+        yield put({
+            type: "reducers.ui.upload.uploaded",
+            success: response.status === 200,
+        });
+    } catch(e) {
+        console.log(e); // TODO
+        yield put({
+            type: "reducers.ui.upload.uploaded",
+            success: false,
+        });
+    }
+}
+
 export function* serverstateFetchList(action) {
     // TODO ability to pause updates for a while
 
@@ -73,7 +97,7 @@ export function* serverstateFetchList(action) {
         let requestStarted = new Date().getTime();
 
         try {
-            let response = yield call(Restazu.fetchState, {token: token});
+            const response = yield call(Restazu.fetchState, {token: token});
 
             if (response.status === 200) {
                 yield put({
