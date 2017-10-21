@@ -18,7 +18,7 @@ class TorrentView extends React.Component {
                 name: '#',
                 cellClass: "aligncenter",
                 sortable: true,
-                width: 40,
+                width: 45,
             },             {
                 key: 'path',
                 name: 'File name',

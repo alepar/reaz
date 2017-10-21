@@ -86,8 +86,6 @@ class App extends React.Component {
 
 }
 
-// TODO fix TorrentGrid's width when initial state is hidden
-
 function mapStateToProps(state, own_props) {
     return ({
         loading: state.serverstate.loading,

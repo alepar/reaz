@@ -119,10 +119,17 @@ function initialUiState() {
         torrentview: {},
         viewhistory: [],
         upload: {},
+        alwaysmounted: {},
     };
 }
 function ui(state = initialUiState(), action) {
     switch (action.type) {
+        case "reducers.ui.alwaysmounted.showing": {
+            const add_alwaysmounted = {};
+            add_alwaysmounted[action.path] = true;
+            return merge(state, {alwaysmounted: add_alwaysmounted});
+        }
+
         case "reducers.ui.upload.reset": {
             return replace(state, [], "upload", "items");
         }
