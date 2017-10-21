@@ -1,6 +1,7 @@
 import { fork, takeLatest, takeEvery } from "redux-saga/effects";
 import { call, put } from "redux-saga/effects";
 import Bencode from "bencode-js";
+import { TextEncoder, TextDecoder } from "text-encoding";
 
 import Restazu from "../api/restazu";
 
@@ -13,7 +14,7 @@ export function* sagas() {
 
 export function* uiUploadAddLocal(action) {
     const reader = new FileReader();
-    reader.readAsText(action.file, "ISO-8859-1");
+    reader.readAsText(action.file, "windows-1252");
     const text = yield call(() => promisify(reader));
 
     const decoded = Bencode.decode(text);
@@ -30,11 +31,15 @@ export function* uiUploadAddLocal(action) {
         totalSize = decoded.info.length;
     }
 
+    let name = decoded.info.name;
+    const nameBytes = new TextEncoder("windows-1252", { NONSTANDARD_allowLegacyEncoding: true }).encode(name);
+    name = new TextDecoder("utf-8").decode(nameBytes);
+
     yield put({
         type: "reducers.ui.upload.additem",
         item: {
             type: "local",
-            name: decoded.info.name,
+            name: name,
             filename: action.file.name,
             text: text,
             size: totalSize,

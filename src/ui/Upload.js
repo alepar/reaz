@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from "react-redux";
-import {Button, ButtonToolbar, FormControl, Glyphicon} from "react-bootstrap";
-import "screw-filereader";
+import {Button, ButtonGroup, ButtonToolbar, FormControl, Glyphicon} from "react-bootstrap";
 import { Table, Grid, Row, Col } from "react-bootstrap";
 
 import { formatSizeInBytes } from "./Util";
@@ -38,12 +37,36 @@ class Upload extends React.Component {
         </tr>)
     }
 
+    handleCancel() {
+        this.props.dispatch({
+            type: "reducers.ui.upload.reset",
+        });
+    }
+
     render() {
         return (
             <Grid>
                 <Row className="show-grid">
                     <Col xs={12}>
                         <h4>Upload</h4>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xs={12}>
+                        <FormControl id={"fileinput"} style={{display: "none"}} type={"file"} onChange={e => this.handleFiles(e.target.files)} multiple accept={".torrent"}/>
+                        <ButtonToolbar>
+                            <ButtonGroup>
+                                <Button bsStyle="success" disabled={this.props.items.length === 0}>Submit</Button>
+                            </ButtonGroup>
+                            <ButtonGroup>
+                                <Button bsStyle="primary" onClick={() => document.getElementById("fileinput").click()}>Add local file</Button>
+                                <Button bsStyle="primary">Add URL</Button>
+                            </ButtonGroup>
+                            <ButtonGroup>
+                                <Button onClick={() => this.handleCancel()} disabled={this.props.items.length === 0}>Cancel</Button>
+                            </ButtonGroup>
+                        </ButtonToolbar>
+
                     </Col>
                 </Row>
                 {this.props.items.length > 0 && <Row className="show-grid">
@@ -63,16 +86,6 @@ class Upload extends React.Component {
                         </Table>
                     </Col>
                 </Row>}
-                <Row>
-                    <Col xs={12}>
-                        <FormControl id={"fileinput"} style={{display: "none"}} type={"file"} onChange={e => this.handleFiles(e.target.files)} multiple accept={".torrent"}/>
-                        <ButtonToolbar>
-                            {this.props.items.length > 0 && <Button bsStyle="primary">Submit</Button>}
-                            <Button onClick={() => document.getElementById("fileinput").click()}>Add local file</Button>
-                        </ButtonToolbar>
-
-                    </Col>
-                </Row>
             </Grid>
         );
     }

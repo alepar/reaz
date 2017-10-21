@@ -22,7 +22,8 @@
     "react-scripts": "1.0.14",
     "redux": "^3.7.2",
     "redux-saga": "^0.15.6",
-    "reticulating-splines": "^1.0.2"
+    "reticulating-splines": "^1.0.2",
+    "text-encoding": "^0.6.4"
   },
   "devDependencies": {
     "riek": "^1.1.0"

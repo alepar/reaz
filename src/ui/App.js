@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from "react-redux";
-import {Route, Switch} from 'react-router';
+import { Route , Switch} from 'react-router';
 import { withRouter } from 'react-router-dom';
 import reticulate from 'reticulating-splines';
 
@@ -85,6 +85,8 @@ class App extends React.Component {
     }
 
 }
+
+// TODO fix TorrentGrid's width when initial state is hidden
 
 function mapStateToProps(state, own_props) {
     return ({

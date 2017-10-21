@@ -123,6 +123,10 @@ function initialUiState() {
 }
 function ui(state = initialUiState(), action) {
     switch (action.type) {
+        case "reducers.ui.upload.reset": {
+            return replace(state, [], "upload", "items");
+        }
+
         case "reducers.ui.upload.removeitem": {
             const uploadstate = state.upload;
             const id = action.id;
