@@ -87,42 +87,57 @@ export function* uiUploadSubmit(action) {
 }
 
 export function* serverstateFetchList(action) {
-    // TODO ability to pause updates for a while
+    if (action.paused) {
+        yield put({
+            type: "reducers.serverstate.connectionupdate",
+            state: {
+                paused: true,
+            }
+        });
+    } else {
 
-    let token = undefined;
-    let tokenTimestampMillis = undefined;
-    let retries = 0;
+        let token = undefined;
+        let tokenTimestampMillis = undefined;
+        let retries = 0;
 
-    while (true) {
-        let requestStarted = new Date().getTime();
+        while (true) {
+            let requestStarted = new Date().getTime();
 
-        try {
-            const response = yield call(Restazu.fetchState, {token: token});
+            try {
+                const response = yield call(Restazu.fetchState, {token: token});
 
-            if (response.status === 200) {
+                if (response.status === 200) {
+                    yield put({
+                        type: "reducers.serverstate.update",
+                        response: response.data,
+                    });
+
+                    token = response.data.token;
+                    tokenTimestampMillis = new Date().getTime();
+                    retries = 0;
+                } else {
+                    throw new Error("Bad response from server: " + response.status);
+                }
+            } catch (e) {
                 yield put({
-                    type: "reducers.serverstate.update",
-                    response: response.data,
+                    type: "reducers.serverstate.connectionupdate",
+                    state: {
+                        isOk: false,
+                        status: e.toString(),
+                    }
                 });
 
-                token = response.data.token;
-                tokenTimestampMillis = new Date().getTime();
-                retries = 0;
-            } else {
-                throw new Error("Bad response from server: " + response.status);
+                retries++;
+                if (retries > 3 || (tokenTimestampMillis !== undefined && new Date().getTime() - tokenTimestampMillis > 30000)) {
+                    token = undefined;
+                    tokenTimestampMillis = undefined;
+                }
             }
-        } catch (e) {
-            retries++;
-            if (retries > 3 || (tokenTimestampMillis !== undefined && new Date().getTime()-tokenTimestampMillis > 30000)) {
-                token = undefined;
-                tokenTimestampMillis = undefined;
-            }
-            console.log("Failed to fetch serverstatus: " + e);
-        }
 
-        // pause for a sec
-        yield call(() => new Promise((resolve, reject) =>{
-            setTimeout(()=>resolve(""), 1000-new Date().getTime()+requestStarted);
-        }));
+            // pause for a sec
+            yield call(() => new Promise((resolve, reject) => {
+                setTimeout(() => resolve(""), 1000 - new Date().getTime() + requestStarted);
+            }));
+        }
     }
 }

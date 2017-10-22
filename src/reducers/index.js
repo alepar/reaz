@@ -82,6 +82,9 @@ function initialServerState() {
 function serverstate(state = initialServerState(), action) {
     let new_state;
     switch (action.type) {
+        case "reducers.serverstate.connectionupdate":
+            return merge(state, { connectionstate: action.state});
+
         case "reducers.serverstate.update":
             new_state = merge(state, action.response.diff.updated);
             new_state.loading = false;
@@ -104,6 +107,12 @@ function serverstate(state = initialServerState(), action) {
                 downloadBps: downloadBps,
                 uploadedBytes: uploadedBytes,
                 uploadBps: uploadBps,
+            };
+
+            new_state.connectionstate = {
+                isOk: true,
+                status: "OK",
+                paused: false,
             };
 
             return new_state;
@@ -173,7 +182,7 @@ function ui(state = initialUiState(), action) {
             return replace(state, new_uploadstate, "upload");
         }
 
-        case "reducers.ui.torrentgtid.hashSelectionChanged":
+        case "reducers.ui.torrentgrid.hashSelectionChanged":
             const gridstate = state.torrentgrid;
             const selectedHashes = {};
 

@@ -12,6 +12,7 @@ import Options from "./Options";
 import Stats from "./Stats";
 import TorrentView from "./TorrentView";
 import Upload from "./Upload";
+import ConnectionStatus from "./ConnectionStatus";
 
 class App extends React.Component {
 
@@ -21,6 +22,7 @@ class App extends React.Component {
         if (true === this.props.loading) {
             this.props.dispatch({
                 type: "sagas.serverstate.fetch",
+                paused: false,
             });
         }
     }
@@ -61,12 +63,16 @@ class App extends React.Component {
         } else {
             return (
                 <div>
-                    <div id={"navbar-container"}>
-                        <div style={{float: "left"}}>
-                            <NavBar />
-                        </div>
-                        <div style={{width: "95px", float: "right"}}>
+                    <div style={{height: "50px"}}>
+                        <NavBar />
+                    </div>
+
+                    <div style={{position: "absolute", top: 2, right: 10, display: "flex"}}>
+                        <div style={{flex: "none", width: "95px"}}>
                             <QuickStats />
+                        </div>
+                        <div style={{flex: "none", width: "30px", display: "flex", alignItems: "center", justifyContent: "center"}}>
+                            <ConnectionStatus />
                         </div>
                     </div>
 

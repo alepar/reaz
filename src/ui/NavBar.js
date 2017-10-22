@@ -18,18 +18,18 @@ class NavBar extends React.Component {
 
     render() {
         return (
-            <Nav bsStyle={"tabs"}>
+            <Nav bsStyle={"tabs"} className={"topmenunavbar"}>
                 <LinkContainer exact to={"/"}>
-                    <NavItem><Glyphicon glyph="th-list" /></NavItem>
+                    <NavItem><Glyphicon glyph="th-list"/></NavItem>
                 </LinkContainer>
                 <LinkContainer to={"/upload"}>
-                    <NavItem><Glyphicon glyph="plus" /></NavItem>
+                    <NavItem><Glyphicon glyph="plus"/></NavItem>
                 </LinkContainer>
                 <LinkContainer to={"/stats"}>
-                    <NavItem><Glyphicon glyph="stats" /></NavItem>
+                    <NavItem><Glyphicon glyph="stats"/></NavItem>
                 </LinkContainer>
                 <LinkContainer to={"/options"}>
-                    <NavItem><Glyphicon glyph="cog" /></NavItem>
+                    <NavItem><Glyphicon glyph="cog"/></NavItem>
                 </LinkContainer>
                 <NavDropdown
                     id="nav-dropdown"

@@ -89,7 +89,7 @@ class TorrentGrid extends React.Component {
 
     onRowsSelected(rows) {
         this.props.dispatch({
-            type: "reducers.ui.torrentgtid.hashSelectionChanged",
+            type: "reducers.ui.torrentgrid.hashSelectionChanged",
             hashes: rows.map(r => r.row.hash),
             selected: true,
         });
@@ -97,7 +97,7 @@ class TorrentGrid extends React.Component {
 
     onRowsDeselected(rows) {
         this.props.dispatch({
-            type: "reducers.ui.torrentgtid.hashSelectionChanged",
+            type: "reducers.ui.torrentgrid.hashSelectionChanged",
             hashes: rows.map(r => r.row.hash),
             selected: false,
         });
