@@ -5,10 +5,13 @@ import {Button, Glyphicon, OverlayTrigger, Tooltip} from "react-bootstrap";
 class ConnectionStatus extends React.Component {
 
     toggleConnection(e) {
-        this.props.dispatch({
-            type: "sagas.serverstate.fetch",
-            paused: !this.props.connectionstate.paused,
-        });
+        let status = this.props.connectionstate.status;
+        if (status !== "connecting") {
+            this.props.dispatch({
+                type: "sagas.serverstate.fetch",
+                paused: status !== "paused"
+            });
+        }
     }
 
     render() {
@@ -16,17 +19,37 @@ class ConnectionStatus extends React.Component {
 
         const statusTooltip = (
             <Tooltip id="statusTooltip">
-                <div><strong>Connection status: </strong>{state.status}</div>
+                <div><strong>{state.message}</strong></div>
             </Tooltip>
         );
 
-        const statusColor = state.paused ? "gold" : (state.isOk ? "green" : "red");
-        const glyph = state.paused ? "pause" : "globe";
+        let statusColor;
+        let glyph = "globe";
+        let style = { cursor: "pointer"};
+        switch(state.status) {
+            case "ok":
+                statusColor = "green";
+                break;
+            case "paused":
+                statusColor = "gold";
+                glyph = "pause";
+                break;
+            case "connecting":
+                statusColor = "grey";
+                style = {};
+                break;
+            case "error":
+                statusColor = "red";
+                break;
+            default:
+                statusColor = "blue";
+                glyph = "question-sign";
+        }
 
         return (
             <OverlayTrigger placement={"bottom"} overlay={statusTooltip}>
                 <div style={{fontSize: "20px", color: statusColor, paddingTop: "5px"}}>
-                    <Glyphicon glyph={glyph} onClick={e => this.toggleConnection(e)} style={{cursor: "pointer"}}/>
+                    <Glyphicon glyph={glyph} onClick={e => this.toggleConnection(e)} style={style}/>
                 </div>
             </OverlayTrigger>
         );

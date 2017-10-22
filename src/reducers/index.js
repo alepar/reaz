@@ -110,9 +110,8 @@ function serverstate(state = initialServerState(), action) {
             };
 
             new_state.connectionstate = {
-                isOk: true,
-                status: "OK",
-                paused: false,
+                status: "ok",
+                message: "Connected"
             };
 
             return new_state;

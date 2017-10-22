@@ -91,10 +91,18 @@ export function* serverstateFetchList(action) {
         yield put({
             type: "reducers.serverstate.connectionupdate",
             state: {
-                paused: true,
+                status: "paused",
+                message: "Paused",
             }
         });
     } else {
+        yield put({
+            type: "reducers.serverstate.connectionupdate",
+            state: {
+                status: "connecting",
+                message: "Connecting",
+            }
+        });
 
         let token = undefined;
         let tokenTimestampMillis = undefined;
@@ -122,8 +130,8 @@ export function* serverstateFetchList(action) {
                 yield put({
                     type: "reducers.serverstate.connectionupdate",
                     state: {
-                        isOk: false,
-                        status: e.toString(),
+                        status: "error",
+                        message: e.toString(),
                     }
                 });
 

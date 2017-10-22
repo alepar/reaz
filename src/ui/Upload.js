@@ -56,7 +56,7 @@ class Upload extends React.Component {
         const uploading = this.props.uploading;
 
         return (
-            <Grid>
+            <Grid style={{paddingTop: "20px"}}>
                 <Row>
                     <Col xs={4}>
                         <FormControl id={"fileinput"} style={{display: "none"}} type={"file"} onChange={e => this.handleFiles(e.target.files)} multiple accept={".torrent"}/>
@@ -77,15 +77,15 @@ class Upload extends React.Component {
                     <Col xs={1}><div className={"uploading"} style={{display: uploading ? "block" : "none"}} /></Col>
                 </Row>
 
-                {this.props.items.length > 0 && <Row className="show-grid">
+                {this.props.items.length > 0 && <Row className="show-grid" style={{paddingTop: "20px"}}>
                     <Col xs={12}>
                         <Table>
                             <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th>Filename</th>
-                                    <th>Size</th>
-                                    <th>Files</th>
+                                    <th>Filename/URL</th>
+                                    <th width={"90px"}>Size</th>
+                                    <th width={"60px"}>Files</th>
                                 </tr>
                             </thead>
                             <tbody>
