@@ -23,6 +23,10 @@ class TorrentView extends React.Component {
                 key: 'path',
                 name: 'File name',
                 sortable: true,
+                formatter: PathFormatter,
+                getRowMetaData: (row) => {
+                    return { row: row, hash: this.props.hash}
+                },
             }, {
                 key: 'done',
                 name: 'Done',
@@ -275,7 +279,20 @@ class DoneFormatter extends React.Component {
     }
 }
 
-// TODO files link (https://www.npmjs.com/package/react-clipboard.js)
+class PathFormatter extends React.Component {
+    render() {
+        const row = this.props.dependentValues.row;
+        const hash = this.props.dependentValues.hash;
+        const fileurl = "/public/download/"+hash+"/"+row.idx;
+
+        return (
+            <a href={fileurl} target={"_blank"}>
+                {row.path}
+            </a>
+        );
+    }
+}
+
 // TODO set priority
 // TODO torrent actions
 // TODO figure out size of the table

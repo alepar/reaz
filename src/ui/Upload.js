@@ -100,8 +100,7 @@ class Upload extends React.Component {
 
 }
 
-// TODO submit
-// TODO magnet links
+// TODO magnet links / urls
 
 function mapStateToProps(state, own_props) {
     return ({

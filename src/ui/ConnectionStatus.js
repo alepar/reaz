@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from "react-redux";
-import {Button, Glyphicon, OverlayTrigger, Tooltip} from "react-bootstrap";
+import {Glyphicon, OverlayTrigger, Tooltip} from "react-bootstrap";
 
 class ConnectionStatus extends React.Component {
 
