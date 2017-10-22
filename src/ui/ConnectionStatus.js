@@ -47,7 +47,7 @@ class ConnectionStatus extends React.Component {
         }
 
         return (
-            <OverlayTrigger placement={"bottom"} overlay={statusTooltip}>
+            <OverlayTrigger placement={"bottom"} overlay={statusTooltip} delayShow={300} delayHide={150}>
                 <div style={{fontSize: "20px", color: statusColor, paddingTop: "5px"}}>
                     <Glyphicon glyph={glyph} onClick={e => this.toggleConnection(e)} style={style}/>
                 </div>

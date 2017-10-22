@@ -25,7 +25,7 @@ class QuickStats extends React.Component {
                 </Popover>
             );
             return (
-                <OverlayTrigger placement={"left"} overlay={totalsTooltip}>
+                <OverlayTrigger placement={"left"} overlay={totalsTooltip} delayShow={300} delayHide={150}>
                         <div id={"quickstats"}>
                             <OverlayTrigger trigger={"click"} placement={"bottom"} overlay={limitsPopover}>
                             <table width={"100%"}>
