@@ -86,6 +86,7 @@ class Upload extends React.Component {
                                     <th>Filename/URL</th>
                                     <th width={"90px"}>Size</th>
                                     <th width={"60px"}>Files</th>
+                                    <th width={"40px"}>-</th>
                                 </tr>
                             </thead>
                             <tbody>
