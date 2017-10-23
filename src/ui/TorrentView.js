@@ -6,6 +6,7 @@ import dateFormat from "dateformat";
 import ReactDataGrid from "react-data-grid";
 
 import { formatSizeInBytes } from "./Util";
+import { baseURL } from "../api/restazu";
 
 class TorrentView extends React.Component {
 
@@ -283,7 +284,7 @@ class PathFormatter extends React.Component {
     render() {
         const row = this.props.dependentValues.row;
         const hash = this.props.dependentValues.hash;
-        const fileurl = "/public/download/"+hash+"/"+row.idx;
+        const fileurl = baseURL + "/public/download/"+hash+"/"+row.idx;
 
         return (
             <a href={fileurl} target={"_blank"}>

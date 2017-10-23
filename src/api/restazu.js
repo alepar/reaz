@@ -3,15 +3,17 @@ import axios from 'axios';
 // todo authentication
 // todo xsrf
 
+export const baseURL = '';
+
 const client = axios.create({
-    baseURL: 'https://reaz.alepar.ru',
+    baseURL: baseURL,
     timeout: 10000
 });
 
 export default class Restazu {
 
     static fetchState(params) {
-        return client.get("/api/private/serverstate", {params: params});
+        return client.get("/private/api/serverstate", {params: params});
     }
 
     static upload(params) {
@@ -19,7 +21,7 @@ export default class Restazu {
         for (let f of params.files) {
             formdata.append("files", f);
         }
-        return client.post("/api/private/upload", formdata, {headers:{'Content-Type': 'multipart/form-data'}});
+        return client.post("/private/api/upload", formdata, {headers:{'Content-Type': 'multipart/form-data'}});
     }
 
 }

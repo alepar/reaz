@@ -14,7 +14,7 @@ class SimpleTooltip extends React.Component {
         );
 
         return (
-            <OverlayTrigger placement={"bottom"} overlay={tooltip} delayShow={500} delayHide={150}>
+            <OverlayTrigger placement={this.props.placement} overlay={tooltip} delayShow={1000} delayHide={150}>
                 {this.props.children}
             </OverlayTrigger>
         );
@@ -37,27 +37,27 @@ class NavBar extends React.Component {
     render() {
         return (
             <Nav bsStyle={"tabs"} className={"topmenunavbar"}>
-                <SimpleTooltip text={"Browse torrents"}>
+                <SimpleTooltip text={"Browse torrents"} placement={"bottom"}>
                     <LinkContainer exact to={"/"}>
                         <NavItem><Glyphicon glyph="th-list"/></NavItem>
                     </LinkContainer>
                 </SimpleTooltip>
-                <SimpleTooltip text={"Upload torrent"}>
+                <SimpleTooltip text={"Upload torrent"} placement={"bottom"}>
                     <LinkContainer to={"/upload"}>
                         <NavItem><Glyphicon glyph="plus"/></NavItem>
                     </LinkContainer>
                 </SimpleTooltip>
-                <SimpleTooltip text={"Explore statistics"}>
+                <SimpleTooltip text={"Explore statistics"} placement={"bottom"}>
                     <LinkContainer to={"/stats"}>
                         <NavItem><Glyphicon glyph="stats"/></NavItem>
                     </LinkContainer>
                 </SimpleTooltip>
-                <SimpleTooltip text={"Options"}>
+                <SimpleTooltip text={"Options"} placement={"bottom"}>
                     <LinkContainer to={"/options"}>
                         <NavItem><Glyphicon glyph="cog"/></NavItem>
                     </LinkContainer>
                 </SimpleTooltip>
-                <SimpleTooltip text={"Viewed torrents history"}>
+                <SimpleTooltip text={"Viewed torrents history"} placement={"right"}>
                     <NavDropdown
                         id="nav-dropdown"
                         title={<Glyphicon glyph="eye-open" />}
