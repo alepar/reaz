@@ -6,6 +6,7 @@ import org.gudy.azureus2.plugins.Plugin
 import org.gudy.azureus2.plugins.PluginInterface
 import java.lang.Integer.parseInt
 import java.lang.Long.parseLong
+import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.util.regex.Pattern
 
@@ -22,7 +23,7 @@ data class User(val name: String, val email: String);
 
 class AzureusRestApi(private val iface: PluginInterface) {
 
-    private val listenAddress = InetSocketAddress("192.168.5.150", 7000)
+    private val listenAddress = InetSocketAddress(InetAddress.getLoopbackAddress(), 7000)
 
     private val app = Javalin.create()
             .embeddedServer(ListenCustomizableServerFactory(listenAddress))
