@@ -20,7 +20,7 @@ class ListenCustomizableServerFactory(val listenAddress: InetSocketAddress) : Em
 
     override fun create(javalinServlet: JavalinServlet, staticFileConfig: StaticFileConfig?): EmbeddedServer {
         return ListenCustomizableJettyServer(
-                Server(QueuedThreadPool(40, 2, 60000)),
+                Server(QueuedThreadPool(100, 2, 60000)),
                 javalinServlet.apply { staticResourceHandler = JettyResourceHandler(staticFileConfig) },
                 listenAddress
         )

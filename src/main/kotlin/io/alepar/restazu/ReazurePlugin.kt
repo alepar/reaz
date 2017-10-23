@@ -4,8 +4,11 @@ import io.javalin.ApiBuilder.*
 import io.javalin.Javalin
 import org.gudy.azureus2.plugins.Plugin
 import org.gudy.azureus2.plugins.PluginInterface
+import java.lang.Integer.parseInt
+import java.lang.Long.parseLong
 import java.net.InetAddress
 import java.net.InetSocketAddress
+import java.util.regex.Pattern
 
 class ReazurePlugin : Plugin {
 
@@ -20,7 +23,7 @@ data class User(val name: String, val email: String);
 
 class AzureusRestApi(private val iface: PluginInterface) {
 
-    private val listenAddress = InetSocketAddress(InetAddress.getLoopbackAddress(), 7000)
+    private val listenAddress = InetSocketAddress("192.168.5.150", 7000)
 
     private val app = Javalin.create()
             .embeddedServer(ListenCustomizableServerFactory(listenAddress))
@@ -31,9 +34,13 @@ class AzureusRestApi(private val iface: PluginInterface) {
 
     init {
         app.routes({ ->
-            path("api") { ->
+            path("private") { ->
 
-                path("private") { ->
+                path("api") { ->
+
+                    before { ctx ->
+                        ctx.header("Access-Control-Allow-Origin", "*")
+                    }
 
                     path("serverstate") { ->
 
@@ -62,22 +69,67 @@ class AzureusRestApi(private val iface: PluginInterface) {
                     }
                 }
 
-                path("public") { ->
+            }
 
+            path("public") { ->
+
+                path("download") { ->
+
+                    before() { ctx ->
+                        ctx.header("Accept-Ranges", "bytes")
+                    }
+
+                    get("/:hash/:idx") { ctx ->
+                        val hash = ctx.param("hash")
+                        val idx = ctx.param("idx")
+
+                        val rangeHeader = ctx.request().getHeader("Range")
+
+                        println("requested ${hash}/${idx}, range=${rangeHeader}")
+
+                        try {
+                            if (hash != null && idx != null) {
+                                azureus.sendFile(hash, parseInt(idx), ctx.response(), parseRange(rangeHeader))
+                            } else {
+                                throw IllegalArgumentException()
+                            }
+                        } catch (e: Exception) {
+                            ctx.status(400)
+                        }
+                    }
                 }
+
             }
         })
 
         app.before { ctx ->
-            ctx.header("Access-Control-Allow-Origin", "*")
+            println("got request ${ctx.request().method}/${ctx.request().requestURI}")
         }
 
-        app.options("/*") { ctx ->
+        app.options("/private/api/*") { ctx ->
             ctx.header("Access-Control-Allow-Methods", "post, get, options")
             ctx.header("Access-Control-Allow-Headers", "Content-Type")
             ctx.status(200)
         }
 
+    }
+
+    data class Range(val start: Long?, val end: Long?)
+
+    private val patternRange = Pattern.compile("bytes=(\\d+)-(\\d*)")
+    private fun parseRange(str: String?): Range? {
+        if(str == null) return null
+
+        val matcher = patternRange.matcher(str)
+        if (!matcher.find()) throw IllegalArgumentException("bad range: {$str}")
+
+        val startStr = matcher.group(1)
+        val endStr = matcher.group(2)
+
+        val start = if (startStr == null || startStr.isBlank()) null else parseLong(startStr.trim())
+        val end = if (endStr == null || endStr.isBlank()) null else parseLong(endStr.trim())
+
+        return Range(start, end)
     }
 
 }
