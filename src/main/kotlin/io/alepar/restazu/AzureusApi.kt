@@ -9,11 +9,11 @@ import org.gudy.azureus2.plugins.disk.DiskManagerRequest
 import org.gudy.azureus2.plugins.download.Download
 import java.io.ByteArrayOutputStream
 import java.net.URLEncoder
-import java.nio.file.Files
-import javax.servlet.http.HttpServletResponse
 import java.nio.channels.Channels
 import java.nio.charset.StandardCharsets
+import java.nio.file.Files
 import java.util.concurrent.atomic.AtomicBoolean
+import javax.servlet.http.HttpServletResponse
 
 
 interface AzureusApi {

@@ -6,7 +6,6 @@ import org.gudy.azureus2.plugins.Plugin
 import org.gudy.azureus2.plugins.PluginInterface
 import java.lang.Integer.parseInt
 import java.lang.Long.parseLong
-import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.util.regex.Pattern
 
@@ -27,13 +26,19 @@ class AzureusRestApi(private val iface: PluginInterface) {
 
     private val app = Javalin.create()
             .embeddedServer(ListenCustomizableServerFactory(listenAddress))
-            .start()
 
     private val azureus : AzureusApi = PluginInterfaceAzureusApi(iface)
     private val differ: IncrementalGenerator = GuavaJacksonIncrementalGenerator()
 
     init {
         app.routes({ ->
+            get("/") { ctx ->
+                val instream = this.javaClass.classLoader.getResourceAsStream("static/index.html")
+                ctx.status(200)
+                ctx.header("Content-Type", "text/html")
+                instream.copyTo(ctx.response().outputStream)
+            }
+
             path("private") { ->
 
                 path("api") { ->
@@ -85,8 +90,6 @@ class AzureusRestApi(private val iface: PluginInterface) {
 
                         val rangeHeader = ctx.request().getHeader("Range")
 
-                        println("requested ${hash}/${idx}, range=${rangeHeader}")
-
                         try {
                             if (hash != null && idx != null) {
                                 azureus.sendFile(hash, parseInt(idx), ctx.response(), parseRange(rangeHeader))
@@ -102,16 +105,15 @@ class AzureusRestApi(private val iface: PluginInterface) {
             }
         })
 
-        app.before { ctx ->
-            println("got request ${ctx.request().method}/${ctx.request().requestURI}")
-        }
-
         app.options("/private/api/*") { ctx ->
             ctx.header("Access-Control-Allow-Methods", "post, get, options")
             ctx.header("Access-Control-Allow-Headers", "Content-Type")
             ctx.status(200)
         }
 
+        app.enableStaticFiles("/static")
+
+        app.start()
     }
 
     data class Range(val start: Long?, val end: Long?)
