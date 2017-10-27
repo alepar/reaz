@@ -13,7 +13,7 @@ import { sagas } from "./sagas/index";
 import './index.css';
 
 import App from './ui/App';
-import registerServiceWorker from './registerServiceWorker';
+import { unregister } from './registerServiceWorker';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -35,6 +35,6 @@ ReactDOM.render(
     document.getElementById('root')
 );
 
-registerServiceWorker();
+unregister();
 
 // TODO http://lab.ejci.net/favico.js/ :)
