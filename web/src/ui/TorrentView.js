@@ -90,7 +90,7 @@ class TorrentView extends React.Component {
                     </Col>
                 </Row>
                 <Row className="show-grid">
-                    <Col xs={6}>
+                    <Col xs={12} lg={6}>
                         <Panel header="Details">
                             <Table condensed striped>
                                 <tbody>
@@ -118,7 +118,7 @@ class TorrentView extends React.Component {
                             </Table>
                         </Panel>
                     </Col>
-                    <Col xs={3}>
+                    <Col xs={6} lg={3}>
                         <Panel header="Download">
                             <Table condensed striped>
                                 <tbody>
@@ -144,7 +144,7 @@ class TorrentView extends React.Component {
                             </Table>
                         </Panel>
                     </Col>
-                    <Col xs={3}>
+                    <Col xs={6} lg={3}>
                         <Panel header="Upload">
                             <Table condensed striped>
                                 <tbody>
