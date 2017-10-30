@@ -1,12 +1,11 @@
 # Development
 
-## Running plugin
+## Running plugin from your IDE
 
-Before running, sources and resources must be compiled into a jar, and placed to:
-```
-/workdir/plugins/reazure/reazure.jar
-```
+* Copy `./src/main/resources/plugin.properties` to `./workdir/plugins/reaz/`
+* Run maven's `generate-resources` phase at to (re)compile prod js code 
 
+Use this run config:
 * **Main class:** org.gudy.azureus2.ui.common.Main
 * **Program args:** --ui=console
 * **Working directory:** ./workdir
