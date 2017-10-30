@@ -33,13 +33,6 @@ class AzureusRestApi(private val iface: PluginInterface) {
 
     init {
         app.routes({ ->
-            get("/") { ctx ->
-                val instream = this.javaClass.classLoader.getResourceAsStream("static/index.html")
-                ctx.status(200)
-                ctx.header("Content-Type", "text/html")
-                instream.copyTo(ctx.response().outputStream)
-            }
-
             path("private") { ->
 
                 path("api") { ->
